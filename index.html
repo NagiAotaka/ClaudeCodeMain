@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>タイマー</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>タイマー</h1>
+    <div class="display" id="display">00:00</div>
+    <div class="inputs">
+      <label>分: <input type="number" id="minutes" min="0" max="99" value="1"></label>
+      <label>秒: <input type="number" id="seconds" min="0" max="59" value="0"></label>
+    </div>
+    <div class="controls">
+      <button id="startBtn">スタート</button>
+      <button id="pauseBtn" disabled>一時停止</button>
+      <button id="resetBtn">リセット</button>
+    </div>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>

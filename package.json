@@ -1,0 +1,13 @@
+{
+  "name": "timer-app",
+  "version": "1.0.0",
+  "description": "Simple countdown timer app",
+  "scripts": {
+    "test": "jest",
+    "deploy": "gh-pages -d ."
+  },
+  "devDependencies": {
+    "jest": "^29",
+    "gh-pages": "^6"
+  }
+}
