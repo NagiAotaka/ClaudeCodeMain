@@ -1,0 +1,70 @@
+# AutoContent 設定ファイル
+# このファイルはそのままコミットできます（APIキー等のシークレットは不要）
+# ユーザー固有の設定は config/user.yaml に書いてください（git-ignored）
+
+topic:
+  name: "AI・副業・自動化"
+  keywords:
+    - "AI"
+    - "automation"
+    - "machine learning"
+    - "tool"
+    - "productivity"
+  language: "ja"
+
+sources:
+  # GitHub Trending（動作確認済み）
+  - id: "github_python"
+    name: "GitHub Trending — Python"
+    type: rss
+    url: "https://github.com/trending/python.atom"
+    enabled: true
+    max_per_run: 25
+    request_delay_seconds: 2.0
+    respect_robots_txt: true
+
+  - id: "github_ai"
+    name: "GitHub Trending — AI/ML"
+    type: rss
+    url: "https://github.com/trending/jupyter-notebook.atom"
+    enabled: true
+    max_per_run: 20
+    request_delay_seconds: 2.0
+    respect_robots_txt: true
+
+  # はてなブックマーク（ネットワーク環境によっては403の場合あり）
+  - id: "hatena_it"
+    name: "はてなブックマーク IT"
+    type: rss
+    url: "https://b.hatena.ne.jp/hotentry/it.rss"
+    enabled: false
+    max_per_run: 30
+    request_delay_seconds: 2.0
+    respect_robots_txt: true
+    content_filter:
+      mode: any
+      keywords: ["AI", "自動化", "副業", "プログラミング", "ツール", "効率"]
+
+  # Zenn（ネットワーク環境によっては403の場合あり）
+  - id: "zenn_ai"
+    name: "Zenn — AI タグ"
+    type: rss
+    url: "https://zenn.dev/topics/ai/feed"
+    enabled: false
+    max_per_run: 20
+    request_delay_seconds: 2.0
+    respect_robots_txt: true
+
+schedule:
+  enabled: true
+  timezone: "Asia/Tokyo"
+  collect: "0 */3 * * *"    # 3時間ごとに収集
+  cleanup_days: 30
+
+output:
+  drafts_dir: "data/drafts"
+  collected_dir: "data/collected"
+  filename_template: "{date}-{slug}"
+
+log_level: "INFO"
+data_dir: "data"

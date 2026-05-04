@@ -1,0 +1,22 @@
+# {{ article.title }}
+
+- **出典**: [{{ article.source_id }}]({{ article.url }})
+{% if article.published_at %}- **公開日**: {{ article.published_at }}{% endif %}
+- **関連スコア**: {{ "%.2f" | format(article.score) }}
+- **収集日**: {{ date }}
+
+---
+
+{{ article.content | truncate(1000) }}
+
+---
+
+## 活用メモ（Claude Codeで加筆する際のヒント）
+
+この記事を元に以下のコンテンツが作れます：
+
+- [ ] ブログ記事（3〜5分で読めるまとめ）
+- [ ] SNS投稿（Xなら140字、noteなら500字程度）
+- [ ] 関連ツール・サービスの紹介記事
+
+<!-- ステータス: draft — 公開前に必ず内容を確認してください -->
