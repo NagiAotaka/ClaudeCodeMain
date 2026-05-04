@@ -1,0 +1,26 @@
+# {{ topic }} — 最新記事まとめ（{{ date }}）
+
+> キーワード: {{ keywords | join("・") }}
+> 対象期間: 直近 {{ days }} 日間
+
+---
+
+{% for article in articles %}
+## {{ loop.index }}. {{ article.title }}
+
+- **出典**: [{{ article.source_id }}]({{ article.url }})
+{% if article.published_at %}- **公開日**: {{ article.published_at }}{% endif %}
+- **関連スコア**: {{ "%.2f" | format(article.score) }}
+
+{{ article.content | truncate(400) }}
+
+---
+{% endfor %}
+
+## まとめのポイント（Claude Codeで加筆する際のメモ）
+
+- 上記 {{ articles | length }} 記事を参考にしてください
+- トピック「{{ topic }}」に関連するまとめ記事を書くと効果的です
+- 読者が具体的なアクションを取れるような内容にする
+
+<!-- ステータス: draft — 公開前に必ず内容を確認してください -->
