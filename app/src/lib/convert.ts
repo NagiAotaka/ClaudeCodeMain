@@ -5,9 +5,16 @@ export type ConvertResult = {
   hits: { match: string; replacement: string; ng: boolean }[];
 };
 
-const sortedPatterns = [...patterns].sort(
-  (a, b) => b.match.length - a.match.length,
-);
+type MatchEntry = { key: string; pattern: Pattern };
+
+const matchEntries: MatchEntry[] = [];
+for (const p of patterns) {
+  matchEntries.push({ key: p.match, pattern: p });
+  for (const v of p.variants ?? []) {
+    matchEntries.push({ key: v, pattern: p });
+  }
+}
+matchEntries.sort((a, b) => b.key.length - a.key.length);
 
 export function convert(input: string, mode: Mode): ConvertResult {
   if (!input) return { output: "", hits: [] };
@@ -16,17 +23,17 @@ export function convert(input: string, mode: Mode): ConvertResult {
   const hits: ConvertResult["hits"] = [];
   const used = new Set<string>();
 
-  for (const pattern of sortedPatterns) {
-    if (used.has(pattern.match)) continue;
-    if (output.includes(pattern.match)) {
+  for (const { key, pattern } of matchEntries) {
+    if (used.has(key)) continue;
+    if (output.includes(key)) {
       const replacement = pattern.replacements[mode];
-      output = output.split(pattern.match).join(replacement);
+      output = output.split(key).join(replacement);
       hits.push({
-        match: pattern.match,
+        match: key,
         replacement,
         ng: !!pattern.ng,
       });
-      used.add(pattern.match);
+      used.add(key);
     }
   }
 
@@ -37,8 +44,10 @@ export function maskNgWords(input: string, found: Pattern[]): string {
   let masked = input;
   for (const p of found) {
     if (!p.ng) continue;
-    const replacement = "〇".repeat(p.match.length);
-    masked = masked.split(p.match).join(replacement);
+    const allKeys = [p.match, ...(p.variants ?? [])];
+    for (const key of allKeys) {
+      masked = masked.split(key).join("〇".repeat(key.length));
+    }
   }
   return masked;
 }

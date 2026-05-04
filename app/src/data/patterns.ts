@@ -2,54 +2,109 @@ export type Mode = "business" | "sns" | "gentle";
 
 export type Pattern = {
   match: string;
+  variants?: string[];
   replacements: Record<Mode, string>;
   ng?: boolean;
 };
 
 export const patterns: Pattern[] = [
   {
-    match: "バカ",
+    match: "は？意味わからん",
     ng: true,
     replacements: {
-      business: "知的探求の途上にある方",
-      sns: "ちょっと天然なところがある人",
-      gentle: "少しユニークな考え方をされる方",
+      business: "申し訳ございませんが、もう少し詳細をいただけますでしょうか",
+      sns: "ごめん、ちょっと飲み込めない",
+      gentle: "もう少し噛み砕いて教えていただけますか",
     },
   },
   {
-    match: "ばか",
+    match: "ぶっ殺す",
     ng: true,
     replacements: {
-      business: "知的探求の途上にある方",
-      sns: "ちょっと天然なところがある人",
-      gentle: "少しユニークな考え方をされる方",
+      business: "強い不快感を覚えております",
+      sns: "もう本気で困ってる",
+      gentle: "心からつらい気持ちです",
     },
   },
   {
-    match: "アホ",
+    match: "ゴミクズ",
     ng: true,
     replacements: {
-      business: "判断にやや時間を要する方",
-      sns: "おちゃめな人",
-      gentle: "ちょっと不思議ちゃん",
+      business: "抜本的な見直しが必要です",
+      sns: "ちょっと問題が多めかも",
+      gentle: "改善の余地がたくさんあります",
     },
   },
   {
-    match: "あほ",
+    match: "チンカス",
     ng: true,
     replacements: {
-      business: "判断にやや時間を要する方",
-      sns: "おちゃめな人",
-      gentle: "ちょっと不思議ちゃん",
+      business: "著しく改善の余地がある方",
+      sns: "ちょっと残念な感じの人",
+      gentle: "もっと輝ける可能性を持つ方",
     },
   },
   {
-    match: "うざい",
+    match: "クズ野郎",
     ng: true,
     replacements: {
-      business: "やや存在感が強くいらっしゃいます",
-      sns: "ちょっと圧が強めかも",
-      gentle: "少しエネルギッシュな印象",
+      business: "成長の伸びしろが非常に大きい方",
+      sns: "かなり困ったちゃん",
+      gentle: "まだ磨かれていない原石",
+    },
+  },
+  {
+    match: "は？うざ",
+    ng: true,
+    replacements: {
+      business: "申し訳ございませんが、ご対応に苦慮しております",
+      sns: "うーん、ちょっと負担感あるかも",
+      gentle: "少し息が詰まる感じです",
+    },
+  },
+  {
+    match: "は？",
+    ng: true,
+    replacements: {
+      business: "もう一度ご説明いただけますでしょうか",
+      sns: "ん？どういうこと？",
+      gentle: "もう少し詳しく教えてください",
+    },
+  },
+  {
+    match: "頭おかしい",
+    ng: true,
+    replacements: {
+      business: "発想に驚かされております",
+      sns: "ちょっと独特な発想だね",
+      gentle: "とても自由な発想ですね",
+    },
+  },
+  {
+    match: "頭悪い",
+    variants: ["あたまわるい", "頭わるい"],
+    ng: true,
+    replacements: {
+      business: "発想が独創的でいらっしゃいます",
+      sns: "ちょっと独自の世界観",
+      gentle: "ユニークな考え方をお持ち",
+    },
+  },
+  {
+    match: "もう無理",
+    replacements: {
+      business: "現状での対応が限界に達しております",
+      sns: "そろそろ限界かも",
+      gentle: "少し休ませてください",
+    },
+  },
+  {
+    match: "早くしろ",
+    ng: true,
+    replacements: {
+      business: "お早めのご対応をお願いいたします",
+      sns: "ちょっと急いでもらえると助かる〜",
+      gentle: "もう少し早めだと嬉しいです",
     },
   },
   {
@@ -62,123 +117,6 @@ export const patterns: Pattern[] = [
     },
   },
   {
-    match: "クソ",
-    ng: true,
-    replacements: {
-      business: "改善の余地が大きい",
-      sns: "ちょっと残念な",
-      gentle: "もう少し頑張れそうな",
-    },
-  },
-  {
-    match: "くそ",
-    ng: true,
-    replacements: {
-      business: "改善の余地が大きい",
-      sns: "ちょっと残念な",
-      gentle: "もう少し頑張れそうな",
-    },
-  },
-  {
-    match: "死ね",
-    ng: true,
-    replacements: {
-      business: "少々お距離を置かせていただけますと幸いです",
-      sns: "しばらく離れていてほしいかな",
-      gentle: "少しお互い距離を取りましょう",
-    },
-  },
-  {
-    match: "最悪",
-    ng: true,
-    replacements: {
-      business: "期待を大きく下回る結果でした",
-      sns: "ちょっと残念な感じ",
-      gentle: "今回は思うようにいかなかったみたい",
-    },
-  },
-  {
-    match: "ムカつく",
-    ng: true,
-    replacements: {
-      business: "心穏やかでいられない状況です",
-      sns: "ちょっとモヤッとしてる",
-      gentle: "少し心がざわついています",
-    },
-  },
-  {
-    match: "むかつく",
-    ng: true,
-    replacements: {
-      business: "心穏やかでいられない状況です",
-      sns: "ちょっとモヤッとしてる",
-      gentle: "少し心がざわついています",
-    },
-  },
-  {
-    match: "腹立つ",
-    ng: true,
-    replacements: {
-      business: "感情の整理が必要な状況です",
-      sns: "ちょっとイラッとしちゃった",
-      gentle: "少し気持ちが昂っています",
-    },
-  },
-  {
-    match: "黙れ",
-    ng: true,
-    replacements: {
-      business: "少しの間、お静かにしていただけますか",
-      sns: "ちょっと一旦落ち着こ？",
-      gentle: "そっと耳を傾けてみませんか",
-    },
-  },
-  {
-    match: "うるさい",
-    ng: true,
-    replacements: {
-      business: "やや音量が大きく感じられます",
-      sns: "ちょっと賑やかかも〜",
-      gentle: "少しお声が響いていますね",
-    },
-  },
-  {
-    match: "キモい",
-    ng: true,
-    replacements: {
-      business: "個性的でいらっしゃいます",
-      sns: "ちょっと独特だなぁ",
-      gentle: "とてもオリジナリティのある方",
-    },
-  },
-  {
-    match: "きもい",
-    ng: true,
-    replacements: {
-      business: "個性的でいらっしゃいます",
-      sns: "ちょっと独特だなぁ",
-      gentle: "とてもオリジナリティのある方",
-    },
-  },
-  {
-    match: "ダサい",
-    ng: true,
-    replacements: {
-      business: "独自のセンスをお持ちです",
-      sns: "ちょっとレトロな感じ",
-      gentle: "懐かしさを感じる雰囲気",
-    },
-  },
-  {
-    match: "だるい",
-    ng: true,
-    replacements: {
-      business: "現在エネルギーの充電が必要です",
-      sns: "ちょっとペース落としたいかも",
-      gentle: "少し休憩を取りたい気分",
-    },
-  },
-  {
     match: "めんどくさい",
     ng: true,
     replacements: {
@@ -188,19 +126,76 @@ export const patterns: Pattern[] = [
     },
   },
   {
-    match: "面倒",
+    match: "ふざけるな",
+    variants: ["ふざけんな"],
+    ng: true,
     replacements: {
-      business: "工程の見直しが必要です",
-      sns: "ちょっと手間かも",
-      gentle: "少し時間がかかりそう",
+      business: "真摯なご対応をお願いいたします",
+      sns: "もう、ちゃんとしてほしい〜",
+      gentle: "少し真剣にお話ししたいです",
     },
   },
   {
-    match: "ありえない",
+    match: "なめてる",
+    ng: true,
     replacements: {
-      business: "想定の範囲外でございます",
-      sns: "ちょっと予想外かも",
-      gentle: "少し驚きの展開ですね",
+      business: "軽視されているように感じられます",
+      sns: "ちょっと見くびってない？",
+      gentle: "少し物足りなさを感じています",
+    },
+  },
+  {
+    match: "嫌がらせ",
+    replacements: {
+      business: "好ましくない働きかけがございます",
+      sns: "ちょっと困った絡まれ方",
+      gentle: "少し心配な状況です",
+    },
+  },
+  {
+    match: "使えない",
+    variants: ["つかえない"],
+    ng: true,
+    replacements: {
+      business: "活用方法に検討の余地がございます",
+      sns: "ちょっと使いどころ難しい",
+      gentle: "もう少し工夫が必要かも",
+    },
+  },
+  {
+    match: "黙ってろ",
+    ng: true,
+    replacements: {
+      business: "少しの間、ご静粛にお願いいたします",
+      sns: "ちょっと聞き役に回って〜",
+      gentle: "少し耳を傾けてもらえますか",
+    },
+  },
+  {
+    match: "役立たず",
+    ng: true,
+    replacements: {
+      business: "現時点での貢献領域の再定義が必要です",
+      sns: "ちょっと空回り気味かも",
+      gentle: "まだ力を発揮できる場所を探している方",
+    },
+  },
+  {
+    match: "あっち行け",
+    ng: true,
+    replacements: {
+      business: "少々お席を外していただけますでしょうか",
+      sns: "ちょっと距離取ってほしいかも",
+      gentle: "少しお互いのスペースが必要かな",
+    },
+  },
+  {
+    match: "終わってる",
+    ng: true,
+    replacements: {
+      business: "抜本的な改善が必要な状況です",
+      sns: "かなりヤバい状況かも",
+      gentle: "大きな変化が必要な時期ですね",
     },
   },
   {
@@ -217,6 +212,245 @@ export const patterns: Pattern[] = [
       business: "理解の整理が必要です",
       sns: "ちょっと迷子かも",
       gentle: "もう少し考えさせてください",
+    },
+  },
+  {
+    match: "うんざり",
+    replacements: {
+      business: "繰り返しによる疲労を感じております",
+      sns: "ちょっと飽きてきたかも",
+      gentle: "少し気力が必要な状況",
+    },
+  },
+  {
+    match: "イライラ",
+    replacements: {
+      business: "ストレスを感じております",
+      sns: "ちょっとモヤモヤ",
+      gentle: "少し心がざわついています",
+    },
+  },
+  {
+    match: "つまらない",
+    variants: ["つまんない"],
+    replacements: {
+      business: "刺激にやや欠ける印象です",
+      sns: "ちょっと地味かも",
+      gentle: "落ち着いた雰囲気ですね",
+    },
+  },
+  {
+    match: "しんどすぎ",
+    replacements: {
+      business: "非常に負荷が高い状況です",
+      sns: "かなりしんどいかも",
+      gentle: "とても大変な状況ですね",
+    },
+  },
+  {
+    match: "しんどい",
+    replacements: {
+      business: "相当の負荷がかかっております",
+      sns: "ちょっとしんどいかも〜",
+      gentle: "少し疲れを感じています",
+    },
+  },
+  {
+    match: "ぶっとばす",
+    ng: true,
+    replacements: {
+      business: "強い憤りを感じております",
+      sns: "もうほんとに限界",
+      gentle: "感情の整理が必要な状況です",
+    },
+  },
+  {
+    match: "なんなの",
+    variants: ["なんなん"],
+    ng: true,
+    replacements: {
+      business: "状況の説明をお願いいたします",
+      sns: "ちょっと、どういうこと？",
+      gentle: "もう少し教えていただけますか",
+    },
+  },
+  {
+    match: "ありえない",
+    variants: ["ありえん"],
+    replacements: {
+      business: "想定の範囲外でございます",
+      sns: "ちょっと予想外かも",
+      gentle: "少し驚きの展開ですね",
+    },
+  },
+  {
+    match: "バカ",
+    variants: ["ばか", "バーカ", "ばーか", "バァカ", "馬鹿", "馬カ"],
+    ng: true,
+    replacements: {
+      business: "知的探求の途上にある方",
+      sns: "ちょっと天然なところがある人",
+      gentle: "少しユニークな考え方をされる方",
+    },
+  },
+  {
+    match: "アホ",
+    variants: ["あほ", "アホー", "あほー", "阿呆", "阿保"],
+    ng: true,
+    replacements: {
+      business: "判断にやや時間を要する方",
+      sns: "おちゃめな人",
+      gentle: "ちょっと不思議ちゃん",
+    },
+  },
+  {
+    match: "うっせえ",
+    variants: ["うっせー"],
+    ng: true,
+    replacements: {
+      business: "音量を控えていただけますか",
+      sns: "ちょっと声大きいよ〜",
+      gentle: "もう少し穏やかに",
+    },
+  },
+  {
+    match: "うるさい",
+    variants: ["うっさい", "うっさ", "うるせー"],
+    ng: true,
+    replacements: {
+      business: "やや音量が大きく感じられます",
+      sns: "ちょっと賑やかかも〜",
+      gentle: "少しお声が響いていますね",
+    },
+  },
+  {
+    match: "うざい",
+    variants: ["うっざ", "うざー", "うぜー", "うぜえ", "ウザい"],
+    ng: true,
+    replacements: {
+      business: "やや存在感が強くいらっしゃいます",
+      sns: "ちょっと圧が強めかも",
+      gentle: "少しエネルギッシュな印象",
+    },
+  },
+  {
+    match: "うざ",
+    variants: ["ウザ"],
+    ng: true,
+    replacements: {
+      business: "やや負担を感じております",
+      sns: "ちょっと圧多めかも",
+      gentle: "少しエネルギーが強めかな",
+    },
+  },
+  {
+    match: "クソ",
+    variants: ["くそ", "糞", "くそー"],
+    ng: true,
+    replacements: {
+      business: "改善の余地が大きい",
+      sns: "ちょっと残念な",
+      gentle: "もう少し頑張れそうな",
+    },
+  },
+  {
+    match: "死ね",
+    variants: ["しね", "タヒ", "タヒね", "氏ね"],
+    ng: true,
+    replacements: {
+      business: "少々お距離を置かせていただけますと幸いです",
+      sns: "しばらく離れていてほしいかな",
+      gentle: "少しお互い距離を取りましょう",
+    },
+  },
+  {
+    match: "殺す",
+    ng: true,
+    replacements: {
+      business: "強い不快感を表明いたします",
+      sns: "もう、本気で困ってる",
+      gentle: "心からつらく感じています",
+    },
+  },
+  {
+    match: "最悪",
+    variants: ["さいあく"],
+    ng: true,
+    replacements: {
+      business: "期待を大きく下回る結果でした",
+      sns: "ちょっと残念な感じ",
+      gentle: "今回は思うようにいかなかったみたい",
+    },
+  },
+  {
+    match: "最低",
+    variants: ["さいてい"],
+    ng: true,
+    replacements: {
+      business: "基準を下回っております",
+      sns: "ちょっとひどすぎかも",
+      gentle: "少し期待と違ってしまいました",
+    },
+  },
+  {
+    match: "ムカつく",
+    variants: ["むかつく"],
+    ng: true,
+    replacements: {
+      business: "心穏やかでいられない状況です",
+      sns: "ちょっとモヤッとしてる",
+      gentle: "少し心がざわついています",
+    },
+  },
+  {
+    match: "腹立つ",
+    replacements: {
+      business: "感情の整理が必要な状況です",
+      sns: "ちょっとイラッとしちゃった",
+      gentle: "少し気持ちが昂っています",
+    },
+  },
+  {
+    match: "黙れ",
+    ng: true,
+    replacements: {
+      business: "少しの間、お静かにしていただけますか",
+      sns: "ちょっと一旦落ち着こ？",
+      gentle: "そっと耳を傾けてみませんか",
+    },
+  },
+  {
+    match: "キモい",
+    variants: ["きもい", "きもっ", "キモっ", "気持ち悪い"],
+    ng: true,
+    replacements: {
+      business: "個性的でいらっしゃいます",
+      sns: "ちょっと独特だなぁ",
+      gentle: "とてもオリジナリティのある方",
+    },
+  },
+  {
+    match: "ダサい",
+    replacements: {
+      business: "独自のセンスをお持ちです",
+      sns: "ちょっとレトロな感じ",
+      gentle: "懐かしさを感じる雰囲気",
+    },
+  },
+  {
+    match: "だるい",
+    replacements: {
+      business: "現在エネルギーの充電が必要です",
+      sns: "ちょっとペース落としたいかも",
+      gentle: "少し休憩を取りたい気分",
+    },
+  },
+  {
+    match: "面倒",
+    replacements: {
+      business: "工程の見直しが必要です",
+      sns: "ちょっと手間かも",
+      gentle: "少し時間がかかりそう",
     },
   },
   {
@@ -246,30 +480,16 @@ export const patterns: Pattern[] = [
   },
   {
     match: "むり",
+    variants: ["無理"],
     replacements: {
       business: "対応が困難な状況でございます",
       sns: "ちょっと厳しいかも〜",
       gentle: "少し荷が重い感じ",
-    },
-  },
-  {
-    match: "無理",
-    replacements: {
-      business: "対応が困難な状況でございます",
-      sns: "ちょっと厳しいかも〜",
-      gentle: "少し荷が重い感じ",
-    },
-  },
-  {
-    match: "やばい",
-    replacements: {
-      business: "看過できない状況です",
-      sns: "ちょっと大ごとかも",
-      gentle: "少し気にかかる事態",
     },
   },
   {
     match: "ヤバい",
+    variants: ["やばい", "やば", "ヤバ", "やばっ", "ヤバすぎ", "やばすぎ"],
     replacements: {
       business: "看過できない状況です",
       sns: "ちょっと大ごとかも",
@@ -285,19 +505,19 @@ export const patterns: Pattern[] = [
     },
   },
   {
-    match: "ダメ",
-    replacements: {
-      business: "改善の必要がございます",
-      sns: "ちょっと惜しい感じ",
-      gentle: "もう一歩工夫したい",
-    },
-  },
-  {
     match: "ダメだ",
     replacements: {
       business: "再考の余地がございます",
       sns: "うーん、ちょっと違うかも",
       gentle: "もう少し時間が必要かな",
+    },
+  },
+  {
+    match: "ダメ",
+    replacements: {
+      business: "改善の必要がございます",
+      sns: "ちょっと惜しい感じ",
+      gentle: "もう一歩工夫したい",
     },
   },
   {
@@ -317,73 +537,12 @@ export const patterns: Pattern[] = [
     },
   },
   {
-    match: "は？",
-    ng: true,
-    replacements: {
-      business: "もう一度ご説明いただけますでしょうか",
-      sns: "ん？どういうこと？",
-      gentle: "もう少し詳しく教えてください",
-    },
-  },
-  {
-    match: "うざ",
-    ng: true,
-    replacements: {
-      business: "やや負担を感じております",
-      sns: "ちょっと圧多めかも",
-      gentle: "少しエネルギーが強めかな",
-    },
-  },
-  {
-    match: "ふざけるな",
-    ng: true,
-    replacements: {
-      business: "真摯なご対応をお願いいたします",
-      sns: "もう、ちゃんとしてほしい〜",
-      gentle: "少し真剣にお話ししたいです",
-    },
-  },
-  {
-    match: "なめてる",
-    ng: true,
-    replacements: {
-      business: "軽視されているように感じられます",
-      sns: "ちょっと見くびってない？",
-      gentle: "少し物足りなさを感じています",
-    },
-  },
-  {
     match: "嘘",
+    variants: ["うそ"],
     replacements: {
       business: "事実関係に確認が必要です",
       sns: "ほんとに〜？",
       gentle: "少し驚きました",
-    },
-  },
-  {
-    match: "うそ",
-    replacements: {
-      business: "事実関係に確認が必要です",
-      sns: "ほんとに〜？",
-      gentle: "少し驚きました",
-    },
-  },
-  {
-    match: "頭悪い",
-    ng: true,
-    replacements: {
-      business: "発想が独創的でいらっしゃいます",
-      sns: "ちょっと独自の世界観",
-      gentle: "ユニークな考え方をお持ち",
-    },
-  },
-  {
-    match: "頭おかしい",
-    ng: true,
-    replacements: {
-      business: "発想に驚かされております",
-      sns: "ちょっと独特な発想だね",
-      gentle: "とても自由な発想ですね",
     },
   },
   {
@@ -403,72 +562,13 @@ export const patterns: Pattern[] = [
     },
   },
   {
-    match: "早くしろ",
-    ng: true,
-    replacements: {
-      business: "お早めのご対応をお願いいたします",
-      sns: "ちょっと急いでもらえると助かる〜",
-      gentle: "もう少し早めだと嬉しいです",
-    },
-  },
-  {
-    match: "は？意味わからん",
-    ng: true,
-    replacements: {
-      business: "申し訳ございませんが、もう少し詳細をいただけますでしょうか",
-      sns: "ごめん、ちょっと飲み込めない",
-      gentle: "もう少し噛み砕いて教えていただけますか",
-    },
-  },
-  {
-    match: "もう無理",
-    replacements: {
-      business: "現状での対応が限界に達しております",
-      sns: "そろそろ限界かも",
-      gentle: "少し休ませてください",
-    },
-  },
-  {
-    match: "怒",
-    replacements: {
-      business: "感情の高ぶりがございます",
-      sns: "ちょっとイラッとしてる",
-      gentle: "少し気持ちが昂っています",
-    },
-  },
-  {
     match: "キレた",
+    variants: ["きれた"],
     ng: true,
     replacements: {
       business: "感情のコントロールが難しい状況です",
       sns: "ちょっと我慢の限界",
       gentle: "気持ちがあふれてしまいました",
-    },
-  },
-  {
-    match: "きれた",
-    ng: true,
-    replacements: {
-      business: "感情のコントロールが難しい状況です",
-      sns: "ちょっと我慢の限界",
-      gentle: "気持ちがあふれてしまいました",
-    },
-  },
-  {
-    match: "ふざけんな",
-    ng: true,
-    replacements: {
-      business: "誠実なご対応を切に願います",
-      sns: "もう、しっかりしてよ〜",
-      gentle: "少し真剣に向き合いたいです",
-    },
-  },
-  {
-    match: "嫌い",
-    replacements: {
-      business: "苦手意識がございます",
-      sns: "ちょっと苦手かも",
-      gentle: "少し距離を感じています",
     },
   },
   {
@@ -482,6 +582,7 @@ export const patterns: Pattern[] = [
   },
   {
     match: "クズ",
+    variants: ["くず"],
     ng: true,
     replacements: {
       business: "成長の伸びしろが大きい方",
@@ -490,12 +591,51 @@ export const patterns: Pattern[] = [
     },
   },
   {
-    match: "くず",
+    match: "カス",
+    variants: ["かす"],
     ng: true,
     replacements: {
-      business: "成長の伸びしろが大きい方",
-      sns: "ちょっと困ったちゃん",
-      gentle: "まだ磨かれていない原石",
+      business: "改善の余地が著しくある方",
+      sns: "ちょっと残念な人",
+      gentle: "まだ本領発揮できていない方",
+    },
+  },
+  {
+    match: "無能",
+    variants: ["むのう"],
+    ng: true,
+    replacements: {
+      business: "能力発揮の機会をまだお持ちでない方",
+      sns: "ちょっと空回り気味",
+      gentle: "これから力を伸ばしていける方",
+    },
+  },
+  {
+    match: "消えろ",
+    variants: ["うせろ"],
+    ng: true,
+    replacements: {
+      business: "しばらくお時間をいただけますでしょうか",
+      sns: "ちょっと距離置かせて",
+      gentle: "少し一人にさせてください",
+    },
+  },
+  {
+    match: "邪魔",
+    ng: true,
+    replacements: {
+      business: "業務の円滑な進行に影響がございます",
+      sns: "ちょっと進みにくいかも",
+      gentle: "少し立場が重なっていますね",
+    },
+  },
+  {
+    match: "目障り",
+    ng: true,
+    replacements: {
+      business: "視覚的に注意が向いてしまいます",
+      sns: "ちょっと気になっちゃう",
+      gentle: "存在感がありますね",
     },
   },
   {
@@ -507,79 +647,29 @@ export const patterns: Pattern[] = [
     },
   },
   {
-    match: "つまらない",
+    match: "怒られた",
     replacements: {
-      business: "刺激にやや欠ける印象です",
-      sns: "ちょっと地味かも",
-      gentle: "落ち着いた雰囲気ですね",
+      business: "ご指摘を頂戴いたしました",
+      sns: "ちょっと注意されちゃった",
+      gentle: "アドバイスをいただきました",
     },
   },
   {
-    match: "つまんない",
-    replacements: {
-      business: "刺激にやや欠ける印象です",
-      sns: "ちょっと地味かも",
-      gentle: "落ち着いた雰囲気ですね",
-    },
-  },
-  {
-    match: "イライラ",
-    replacements: {
-      business: "ストレスを感じております",
-      sns: "ちょっとモヤモヤ",
-      gentle: "少し心がざわついています",
-    },
-  },
-  {
-    match: "うんざり",
-    replacements: {
-      business: "繰り返しによる疲労を感じております",
-      sns: "ちょっと飽きてきたかも",
-      gentle: "少し気力が必要な状況",
-    },
-  },
-  {
-    match: "ぶっ殺す",
+    match: "老害",
     ng: true,
     replacements: {
-      business: "強い不快感を覚えております",
-      sns: "もう本気で困ってる",
-      gentle: "心からつらい気持ちです",
+      business: "経験豊富な世代の方",
+      sns: "ちょっと頑固な先輩",
+      gentle: "歴史を背負った方",
     },
   },
   {
-    match: "殺す",
+    match: "雑魚",
     ng: true,
     replacements: {
-      business: "強い不快感を表明いたします",
-      sns: "もう、本気で困ってる",
-      gentle: "心からつらく感じています",
-    },
-  },
-  {
-    match: "嫌がらせ",
-    replacements: {
-      business: "好ましくない働きかけがございます",
-      sns: "ちょっと困った絡まれ方",
-      gentle: "少し心配な状況です",
-    },
-  },
-  {
-    match: "うっせえ",
-    ng: true,
-    replacements: {
-      business: "音量を控えていただけますか",
-      sns: "ちょっと声大きいよ〜",
-      gentle: "もう少し穏やかに",
-    },
-  },
-  {
-    match: "うっせー",
-    ng: true,
-    replacements: {
-      business: "音量を控えていただけますか",
-      sns: "ちょっと声大きいよ〜",
-      gentle: "もう少し穏やかに",
+      business: "成長段階にいらっしゃる方",
+      sns: "まだまだこれからの人",
+      gentle: "伸びしろたっぷり",
     },
   },
   {
@@ -610,65 +700,12 @@ export const patterns: Pattern[] = [
     },
   },
   {
-    match: "老害",
-    ng: true,
+    match: "つらい",
+    variants: ["つら"],
     replacements: {
-      business: "経験豊富な世代の方",
-      sns: "ちょっと頑固な先輩",
-      gentle: "歴史を背負った方",
-    },
-  },
-  {
-    match: "雑魚",
-    ng: true,
-    replacements: {
-      business: "成長段階にいらっしゃる方",
-      sns: "まだまだこれからの人",
-      gentle: "伸びしろたっぷり",
-    },
-  },
-  {
-    match: "は？うざ",
-    ng: true,
-    replacements: {
-      business: "申し訳ございませんが、ご対応に苦慮しております",
-      sns: "うーん、ちょっと負担感あるかも",
-      gentle: "少し息が詰まる感じです",
-    },
-  },
-  {
-    match: "つかえない",
-    ng: true,
-    replacements: {
-      business: "活用方法に検討の余地がございます",
-      sns: "ちょっと使いどころ難しい",
-      gentle: "もう少し工夫が必要かも",
-    },
-  },
-  {
-    match: "使えない",
-    ng: true,
-    replacements: {
-      business: "活用方法に検討の余地がございます",
-      sns: "ちょっと使いどころ難しい",
-      gentle: "もう少し工夫が必要かも",
-    },
-  },
-  {
-    match: "黙ってろ",
-    ng: true,
-    replacements: {
-      business: "少しの間、ご静粛にお願いいたします",
-      sns: "ちょっと聞き役に回って〜",
-      gentle: "少し耳を傾けてもらえますか",
-    },
-  },
-  {
-    match: "怒られた",
-    replacements: {
-      business: "ご指摘を頂戴いたしました",
-      sns: "ちょっと注意されちゃった",
-      gentle: "アドバイスをいただきました",
+      business: "心身への負荷が大きい状況です",
+      sns: "ちょっとしんどいかも",
+      gentle: "大変な思いをされているんですね",
     },
   },
   {
@@ -685,6 +722,14 @@ export const patterns: Pattern[] = [
       business: "誠に",
       sns: "ほんとに",
       gentle: "本当に",
+    },
+  },
+  {
+    match: "怒",
+    replacements: {
+      business: "感情の高ぶりがございます",
+      sns: "ちょっとイラッとしてる",
+      gentle: "少し気持ちが昂っています",
     },
   },
 ];
