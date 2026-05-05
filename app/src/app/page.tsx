@@ -18,12 +18,19 @@ export default function Home() {
     hits: { match: string; replacement: string; ng: boolean }[];
   } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [isConverting, setIsConverting] = useState(false);
+  const [activeTab, setActiveTab] = useState<"output" | "original">("output");
 
-  const handleConvert = () => {
+  const handleConvert = async () => {
     if (!input.trim()) return;
+    setIsConverting(true);
+    setResult(null);
+    await new Promise((r) => setTimeout(r, 400));
     const r = convert(input, mode);
     setResult(r);
+    setActiveTab("output");
     setCopied(false);
+    setIsConverting(false);
   };
 
   const handleCopy = async () => {
@@ -35,7 +42,7 @@ export default function Home() {
 
   const handleShare = () => {
     if (!result) return;
-    const text = `「${input}」\n  ↓ やさしいフレーズで変換\n「${result.output}」\n\n#やさしいフレーズ`;
+    const text = `${result.output}\n\n#やさしいフレーズ`;
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
     window.open(url, "_blank");
   };
@@ -86,30 +93,56 @@ export default function Home() {
 
           <button
             onClick={handleConvert}
-            disabled={!input.trim()}
+            disabled={!input.trim() || isConverting}
             className="mt-5 w-full rounded-lg bg-rose-500 py-3 text-sm font-semibold text-white transition hover:bg-rose-600 disabled:cursor-not-allowed disabled:bg-slate-300"
           >
-            やさしく変換する
+            {isConverting ? "✨ 変換中..." : "やさしく変換する"}
           </button>
         </section>
 
         {result && (
-          <section className="mt-6 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-            <div className="mb-4 rounded-lg bg-slate-50 p-3">
-              <div className="mb-1 text-xs font-medium text-slate-500">入力</div>
-              <div className="text-sm text-slate-700">{input}</div>
-            </div>
-            <div className="mb-4 rounded-lg bg-rose-50 p-3 ring-1 ring-rose-100">
-              <div className="mb-1 text-xs font-medium text-rose-600">
-                変換後（{MODES.find((m) => m.id === mode)?.label}モード）
-              </div>
-              <div className="whitespace-pre-wrap text-sm font-medium text-slate-800">
-                {result.output}
-              </div>
+          <section key={result.output} className="animate-result mt-6 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+            <div className="mb-4 flex gap-1 rounded-lg bg-slate-100 p-1">
+              <button
+                onClick={() => setActiveTab("output")}
+                className={`flex-1 rounded-md py-1.5 text-xs font-medium transition ${
+                  activeTab === "output"
+                    ? "bg-white text-rose-600 shadow-sm"
+                    : "text-slate-500 hover:text-slate-700"
+                }`}
+              >
+                ✨ やさしい版
+              </button>
+              <button
+                onClick={() => setActiveTab("original")}
+                className={`flex-1 rounded-md py-1.5 text-xs font-medium transition ${
+                  activeTab === "original"
+                    ? "bg-white text-slate-700 shadow-sm"
+                    : "text-slate-500 hover:text-slate-700"
+                }`}
+              >
+                元の文
+              </button>
             </div>
 
+            {activeTab === "output" ? (
+              <div className="mb-4 rounded-lg bg-rose-50 p-4 ring-1 ring-rose-100">
+                <div className="mb-1 text-xs font-medium text-rose-500">
+                  {MODES.find((m) => m.id === mode)?.label}モード
+                </div>
+                <div className="whitespace-pre-wrap text-sm font-medium text-slate-800">
+                  {result.output}
+                </div>
+              </div>
+            ) : (
+              <div className="mb-4 rounded-lg bg-slate-50 p-4 ring-1 ring-slate-200">
+                <div className="mb-1 text-xs font-medium text-slate-400">元の文</div>
+                <div className="whitespace-pre-wrap text-sm text-slate-600">{input}</div>
+              </div>
+            )}
+
             {result.hits.length > 0 && (
-              <div className="mb-4 text-xs text-slate-500">
+              <div className="mb-4 text-xs text-slate-400">
                 {result.hits.length}件のフレーズを変換しました
               </div>
             )}
@@ -124,7 +157,7 @@ export default function Home() {
                 onClick={handleCopy}
                 className="flex-1 rounded-lg border border-slate-200 bg-white py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
               >
-                {copied ? "コピーしました" : "コピー"}
+                {copied ? "コピーしました ✓" : "コピー"}
               </button>
               <button
                 onClick={handleShare}
