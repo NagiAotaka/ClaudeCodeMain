@@ -8,6 +8,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 開発ブランチ: `claude/monetization-strategy-plan-g3QQH`
 
+## 環境の注意事項
+
+**Claude Code のクラウド環境（claude.ai/code）ではトンネル機能が無効**のため、`npm run dev` で起動した開発サーバー（`localhost:3000`）にブラウザから直接アクセスできない。
+
+コードの変更を確認するには、ユーザーがローカルPCで以下を実行する必要がある：
+
+```bash
+git pull origin claude/monetization-strategy-plan-g3QQH
+cd app && npm install && npm run dev
+# → ユーザー自身のブラウザで http://localhost:3000 を開く
+```
+
 ## コマンド（すべて `app/` ディレクトリから実行）
 
 ```bash
