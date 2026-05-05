@@ -26,10 +26,12 @@ body {
   }
 }
 
-@keyframes fadeSlideIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes cloudBurst {
+  0%   { opacity: 1; filter: blur(0px); }
+  45%  { opacity: 0; filter: blur(18px); }
+  55%  { opacity: 0; filter: blur(18px); }
+  100% { opacity: 1; filter: blur(0px); }
 }
-.animate-result {
-  animation: fadeSlideIn 0.35s ease-out;
+.animate-cloud {
+  animation: cloudBurst 0.65s ease-in-out;
 }
