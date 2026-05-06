@@ -1,4 +1,4 @@
-import { patterns, type Mode, type Pattern } from "@/data/patterns";
+import { patterns, type Pattern } from "@/data/patterns";
 
 export type ConvertResult = {
   output: string;
@@ -16,7 +16,7 @@ for (const p of patterns) {
 }
 matchEntries.sort((a, b) => b.key.length - a.key.length);
 
-export function convert(input: string, mode: Mode): ConvertResult {
+export function convert(input: string): ConvertResult {
   if (!input) return { output: "", hits: [] };
 
   let output = input;
@@ -26,7 +26,7 @@ export function convert(input: string, mode: Mode): ConvertResult {
   for (const { key, pattern } of matchEntries) {
     if (used.has(key)) continue;
     if (output.includes(key)) {
-      const replacement = pattern.replacements[mode];
+      const replacement = pattern.replacements["gentle"];
       output = output.split(key).join(replacement);
       hits.push({
         match: key,

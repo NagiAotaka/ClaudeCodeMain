@@ -1,41 +1,58 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { convert } from "@/lib/convert";
-import type { Mode } from "@/data/patterns";
 
-const MODES: { id: Mode; label: string; description: string }[] = [
-  { id: "business", label: "ビジネス", description: "上司・取引先向け" },
-  { id: "sns", label: "SNS", description: "友達・カジュアル" },
-  { id: "gentle", label: "やさしい", description: "穏やかに" },
+const PLACEHOLDER_EXAMPLES = [
+  "例: あいつマジでうざい、もう無理",
+  "例: お前なんで何もできないの",
+  "例: こいつほんと使えない",
+  "例: てめえ、消えろ",
+  "例: 最低、終わってる",
 ];
 
-const TEXT_AREA_CLASS =
-  "w-full min-h-[120px] resize-none rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-800 outline-none";
+const COUNTER_KEY = "yasashii_total_count";
 
 export default function Home() {
   const [input, setInput] = useState("");
-  const [mode, setMode] = useState<Mode>("business");
+  const [inputSnapshot, setInputSnapshot] = useState("");
   const [result, setResult] = useState<{
     output: string;
     hits: { match: string; replacement: string; ng: boolean }[];
   } | null>(null);
-  const [activeTab, setActiveTab] = useState<"before" | "after">("before");
   const [animating, setAnimating] = useState(false);
   const [copied, setCopied] = useState(false);
   const [aiToast, setAiToast] = useState(false);
   const [feedback, setFeedback] = useState<"good" | "bad" | null>(null);
+  const [shareCompare, setShareCompare] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+  const [placeholderIdx, setPlaceholderIdx] = useState(0);
+
+  useEffect(() => {
+    try {
+      setTotalCount(Number(localStorage.getItem(COUNTER_KEY) ?? "0"));
+    } catch {}
+    const timer = setInterval(() => {
+      setPlaceholderIdx((i) => (i + 1) % PLACEHOLDER_EXAMPLES.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
 
   const handleConvert = async () => {
     if (!input.trim()) return;
     setAnimating(true);
     await new Promise((r) => setTimeout(r, 325));
-    const r = convert(input, mode);
+    const r = convert(input);
+    setInputSnapshot(input);
     setResult(r);
-    setActiveTab("after");
     setCopied(false);
     setFeedback(null);
     setAnimating(false);
+    try {
+      const next = Number(localStorage.getItem(COUNTER_KEY) ?? "0") + 1;
+      localStorage.setItem(COUNTER_KEY, String(next));
+      setTotalCount(next);
+    } catch {}
   };
 
   const handleCopy = async () => {
@@ -54,15 +71,19 @@ export default function Home() {
     setFeedback(type);
     if (result) {
       try {
-        const key = `feedback_${Date.now()}`;
-        localStorage.setItem(key, JSON.stringify({ type, output: result.output, ts: Date.now() }));
+        localStorage.setItem(
+          `feedback_${Date.now()}`,
+          JSON.stringify({ type, output: result.output, ts: Date.now() })
+        );
       } catch {}
     }
   };
 
   const handleShare = () => {
     if (!result) return;
-    const text = `${result.output}\n\n#やさしいフレーズ`;
+    const text = shareCompare
+      ? `「${inputSnapshot}」\n↓\n「${result.output}」\n\n#やさしいフレーズ`
+      : `${result.output}\n\n#やさしいフレーズ`;
     const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
     window.open(url, "_blank");
   };
@@ -77,93 +98,72 @@ export default function Home() {
           <p className="mt-2 text-sm text-slate-600 sm:text-base">
             送る前に、ちょっとやさしく言い換える
           </p>
+          {totalCount > 0 && (
+            <p className="mt-1 text-xs text-slate-400">
+              これまでに{" "}
+              <span className="font-semibold text-rose-400">
+                {totalCount.toLocaleString()}
+              </span>{" "}
+              件変換されました
+            </p>
+          )}
         </header>
 
         <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-          {/* タブ */}
-          <div className="mb-4 flex gap-1 rounded-lg bg-slate-100 p-1">
-            <button
-              onClick={() => setActiveTab("before")}
-              className={`flex-1 rounded-md py-1.5 text-xs font-medium transition ${
-                activeTab === "before"
-                  ? "bg-white text-slate-700 shadow-sm"
-                  : "text-slate-400 hover:text-slate-600"
-              }`}
-            >
-              変換前
-            </button>
-            <button
-              onClick={() => result && setActiveTab("after")}
-              disabled={!result}
-              className={`flex-1 rounded-md py-1.5 text-xs font-medium transition ${
-                activeTab === "after"
-                  ? "bg-white text-rose-600 shadow-sm"
-                  : result
-                  ? "text-slate-400 hover:text-slate-600"
-                  : "text-slate-300 cursor-not-allowed"
-              }`}
-            >
-              ✨ 変換後
-            </button>
-          </div>
-
-          {/* テキストエリア（共通UI） */}
+          {/* 入力エリア */}
           <div className={animating ? "animate-cloud" : ""}>
-            {activeTab === "before" ? (
-              <textarea
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="例: あいつマジでうざい、もう無理"
-                className={`${TEXT_AREA_CLASS} focus:border-rose-300 focus:bg-white focus:ring-2 focus:ring-rose-100`}
-                rows={5}
-              />
-            ) : (
-              <div className={`${TEXT_AREA_CLASS} bg-rose-50 border-rose-100`}>
-                {result?.hits.length === 0 ? (
-                  <span className="text-amber-600 text-xs">
-                    辞書に該当する表現が見つかりませんでした。今後 AI 変換に対応予定です。
-                  </span>
-                ) : (
-                  <span className="whitespace-pre-wrap">{result?.output}</span>
-                )}
-              </div>
-            )}
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={PLACEHOLDER_EXAMPLES[placeholderIdx]}
+              className="w-full min-h-[120px] resize-none rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-800 outline-none focus:border-rose-300 focus:bg-white focus:ring-2 focus:ring-rose-100"
+              rows={5}
+            />
           </div>
 
-          {/* モード選択 */}
-          <div className="mt-4">
-            <p className="mb-2 text-sm font-medium text-slate-700">変換モード</p>
-            <div className="grid grid-cols-3 gap-2">
-              {MODES.map((m) => (
-                <button
-                  key={m.id}
-                  onClick={() => setMode(m.id)}
-                  className={`rounded-lg border p-2 text-sm transition ${
-                    mode === m.id
-                      ? "border-rose-400 bg-rose-50 text-rose-700"
-                      : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
-                  }`}
-                >
-                  <div className="font-medium">{m.label}</div>
-                  <div className="text-xs opacity-70">{m.description}</div>
-                </button>
-              ))}
+          {/* 変換結果の比較表示 */}
+          {result && (
+            <div className="mt-4 rounded-xl border border-slate-100 bg-slate-50 p-4">
+              <p className="mb-1 text-xs font-medium text-slate-400">変換前</p>
+              <p className="whitespace-pre-wrap text-sm text-slate-500">
+                {inputSnapshot}
+              </p>
+              <div className="my-3 flex items-center gap-2 text-slate-300">
+                <div className="h-px flex-1 bg-slate-200" />
+                <span className="text-base">↓</span>
+                <div className="h-px flex-1 bg-slate-200" />
+              </div>
+              <p className="mb-1 text-xs font-medium text-rose-400">変換後</p>
+              {result.hits.length === 0 ? (
+                <p className="text-xs text-amber-600">
+                  辞書に該当する表現が見つかりませんでした。今後 AI
+                  変換に対応予定です。
+                </p>
+              ) : (
+                <p className="whitespace-pre-wrap text-sm font-medium text-slate-800">
+                  {result.output}
+                </p>
+              )}
             </div>
-          </div>
+          )}
 
           {/* AIモード予告 */}
-          <div className="mt-3 relative">
+          <div className="relative mt-4">
             <button
               onClick={handleAiModeClick}
-              className="w-full rounded-lg border border-dashed border-slate-200 bg-slate-50 p-3 text-left opacity-60 cursor-pointer hover:opacity-75 transition"
+              className="w-full cursor-pointer rounded-lg border border-dashed border-slate-200 bg-slate-50 p-3 text-left opacity-60 transition hover:opacity-75"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-slate-500">✨ AI変換モード</span>
-                  <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">近日公開</span>
-                </div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-slate-500">
+                  ✨ AI変換モード
+                </span>
+                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
+                  近日公開
+                </span>
               </div>
-              <p className="mt-1 text-xs text-slate-400">より自然で文脈を読んだ変換が可能になります</p>
+              <p className="mt-1 text-xs text-slate-400">
+                より自然で文脈を読んだ変換が可能になります
+              </p>
             </button>
             {aiToast && (
               <div className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-slate-800 px-3 py-1.5 text-xs text-white shadow-lg">
@@ -176,12 +176,12 @@ export default function Home() {
           <button
             onClick={handleConvert}
             disabled={!input.trim() || animating}
-            className="mt-5 w-full rounded-lg bg-rose-500 py-3 text-sm font-semibold text-white transition hover:bg-rose-600 disabled:cursor-not-allowed disabled:bg-slate-300"
+            className="mt-4 w-full rounded-lg bg-rose-500 py-3 text-sm font-semibold text-white transition hover:bg-rose-600 disabled:cursor-not-allowed disabled:bg-slate-300"
           >
             {animating ? "✨ 変換中..." : "やさしく変換する"}
           </button>
 
-          {/* コピー・シェア・フィードバックボタン（変換後のみ） */}
+          {/* コピー・シェア・フィードバック（変換後のみ） */}
           {result && (
             <>
               <div className="mt-3 flex gap-2">
@@ -198,8 +198,39 @@ export default function Home() {
                   X にシェア
                 </button>
               </div>
+
+              {/* シェアトグル */}
+              <div className="mt-2 flex items-center justify-end gap-2">
+                <span className="text-xs text-slate-400">シェア内容:</span>
+                <div className="flex overflow-hidden rounded-md border border-slate-200 bg-white text-xs">
+                  <button
+                    onClick={() => setShareCompare(false)}
+                    className={`px-2.5 py-1 transition ${
+                      !shareCompare
+                        ? "bg-sky-500 text-white"
+                        : "text-slate-500 hover:bg-slate-50"
+                    }`}
+                  >
+                    変換後のみ
+                  </button>
+                  <button
+                    onClick={() => setShareCompare(true)}
+                    className={`px-2.5 py-1 transition ${
+                      shareCompare
+                        ? "bg-sky-500 text-white"
+                        : "text-slate-500 hover:bg-slate-50"
+                    }`}
+                  >
+                    前後比較
+                  </button>
+                </div>
+              </div>
+
+              {/* フィードバック */}
               <div className="mt-2 flex items-center justify-center gap-3">
-                <span className="text-xs text-slate-400">この変換はどうでしたか？</span>
+                <span className="text-xs text-slate-400">
+                  この変換はどうでしたか？
+                </span>
                 <button
                   onClick={() => handleFeedback("good")}
                   className={`rounded-full px-3 py-1 text-sm transition ${
