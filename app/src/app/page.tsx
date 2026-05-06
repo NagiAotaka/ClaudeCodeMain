@@ -23,6 +23,8 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<"before" | "after">("before");
   const [animating, setAnimating] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [aiToast, setAiToast] = useState(false);
+  const [feedback, setFeedback] = useState<"good" | "bad" | null>(null);
 
   const handleConvert = async () => {
     if (!input.trim()) return;
@@ -32,6 +34,7 @@ export default function Home() {
     setResult(r);
     setActiveTab("after");
     setCopied(false);
+    setFeedback(null);
     setAnimating(false);
   };
 
@@ -40,6 +43,21 @@ export default function Home() {
     await navigator.clipboard.writeText(result.output);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
+  };
+
+  const handleAiModeClick = () => {
+    setAiToast(true);
+    setTimeout(() => setAiToast(false), 2000);
+  };
+
+  const handleFeedback = (type: "good" | "bad") => {
+    setFeedback(type);
+    if (result) {
+      try {
+        const key = `feedback_${Date.now()}`;
+        localStorage.setItem(key, JSON.stringify({ type, output: result.output, ts: Date.now() }));
+      } catch {}
+    }
   };
 
   const handleShare = () => {
@@ -133,6 +151,27 @@ export default function Home() {
             </div>
           </div>
 
+          {/* AIモード予告 */}
+          <div className="mt-3 relative">
+            <button
+              onClick={handleAiModeClick}
+              className="w-full rounded-lg border border-dashed border-slate-200 bg-slate-50 p-3 text-left opacity-60 cursor-pointer hover:opacity-75 transition"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-slate-500">✨ AI変換モード</span>
+                  <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">近日公開</span>
+                </div>
+              </div>
+              <p className="mt-1 text-xs text-slate-400">より自然で文脈を読んだ変換が可能になります</p>
+            </button>
+            {aiToast && (
+              <div className="absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-slate-800 px-3 py-1.5 text-xs text-white shadow-lg">
+                有料プランで利用可能になります
+              </div>
+            )}
+          </div>
+
           {/* 変換ボタン */}
           <button
             onClick={handleConvert}
@@ -142,22 +181,47 @@ export default function Home() {
             {animating ? "✨ 変換中..." : "やさしく変換する"}
           </button>
 
-          {/* コピー・シェアボタン（変換後のみ） */}
+          {/* コピー・シェア・フィードバックボタン（変換後のみ） */}
           {result && (
-            <div className="mt-3 flex gap-2">
-              <button
-                onClick={handleCopy}
-                className="flex-1 rounded-lg border border-slate-200 bg-white py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
-              >
-                {copied ? "コピーしました ✓" : "コピー"}
-              </button>
-              <button
-                onClick={handleShare}
-                className="flex-1 rounded-lg bg-sky-500 py-2 text-sm font-medium text-white hover:bg-sky-600"
-              >
-                X にシェア
-              </button>
-            </div>
+            <>
+              <div className="mt-3 flex gap-2">
+                <button
+                  onClick={handleCopy}
+                  className="flex-1 rounded-lg border border-slate-200 bg-white py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                >
+                  {copied ? "コピーしました ✓" : "コピー"}
+                </button>
+                <button
+                  onClick={handleShare}
+                  className="flex-1 rounded-lg bg-sky-500 py-2 text-sm font-medium text-white hover:bg-sky-600"
+                >
+                  X にシェア
+                </button>
+              </div>
+              <div className="mt-2 flex items-center justify-center gap-3">
+                <span className="text-xs text-slate-400">この変換はどうでしたか？</span>
+                <button
+                  onClick={() => handleFeedback("good")}
+                  className={`rounded-full px-3 py-1 text-sm transition ${
+                    feedback === "good"
+                      ? "bg-green-100 text-green-700"
+                      : "text-slate-400 hover:text-green-600"
+                  }`}
+                >
+                  👍
+                </button>
+                <button
+                  onClick={() => handleFeedback("bad")}
+                  className={`rounded-full px-3 py-1 text-sm transition ${
+                    feedback === "bad"
+                      ? "bg-red-100 text-red-600"
+                      : "text-slate-400 hover:text-red-500"
+                  }`}
+                >
+                  👎
+                </button>
+              </div>
+            </>
           )}
         </section>
 

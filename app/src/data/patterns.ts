@@ -9,6 +9,63 @@ export type Pattern = {
 
 export const patterns: Pattern[] = [
   {
+    match: "てめえ",
+    variants: ["てめー", "テメエ", "テメー"],
+    ng: true,
+    replacements: {
+      business: "あなた",
+      sns: "あなた",
+      gentle: "あなた",
+    },
+  },
+  {
+    match: "あいつ",
+    ng: true,
+    replacements: {
+      business: "あの方",
+      sns: "あの人",
+      gentle: "あの方",
+    },
+  },
+  {
+    match: "こいつ",
+    ng: true,
+    replacements: {
+      business: "この方",
+      sns: "この人",
+      gentle: "この方",
+    },
+  },
+  {
+    match: "そいつ",
+    ng: true,
+    replacements: {
+      business: "その方",
+      sns: "その人",
+      gentle: "その方",
+    },
+  },
+  {
+    match: "お前",
+    variants: ["おまえ"],
+    ng: true,
+    replacements: {
+      business: "あなた",
+      sns: "あなた",
+      gentle: "あなた",
+    },
+  },
+  {
+    match: "やつ",
+    variants: ["奴"],
+    ng: true,
+    replacements: {
+      business: "その方",
+      sns: "その人",
+      gentle: "その方",
+    },
+  },
+  {
     match: "は？意味わからん",
     ng: true,
     replacements: {
@@ -75,7 +132,7 @@ export const patterns: Pattern[] = [
     match: "頭おかしい",
     ng: true,
     replacements: {
-      business: "発想に驚かされております",
+      business: "自由な発想をお持ちの",
       sns: "ちょっと独特な発想だね",
       gentle: "とても自由な発想ですね",
     },
@@ -85,7 +142,7 @@ export const patterns: Pattern[] = [
     variants: ["あたまわるい", "頭わるい"],
     ng: true,
     replacements: {
-      business: "発想が独創的でいらっしゃいます",
+      business: "独自の発想をお持ちの",
       sns: "ちょっと独自の世界観",
       gentle: "ユニークな考え方をお持ち",
     },
@@ -111,7 +168,7 @@ export const patterns: Pattern[] = [
     match: "うっとうしい",
     ng: true,
     replacements: {
-      business: "ご熱心でいらっしゃいます",
+      business: "熱意あふれる",
       sns: "ちょっと粘り強めかも",
       gentle: "少し情熱的な感じ",
     },
@@ -175,7 +232,7 @@ export const patterns: Pattern[] = [
     match: "役立たず",
     ng: true,
     replacements: {
-      business: "現時点での貢献領域の再定義が必要です",
+      business: "まだ本領発揮できていない",
       sns: "ちょっと空回り気味かも",
       gentle: "まだ力を発揮できる場所を探している方",
     },
@@ -193,7 +250,7 @@ export const patterns: Pattern[] = [
     match: "終わってる",
     ng: true,
     replacements: {
-      business: "抜本的な改善が必要な状況です",
+      business: "大きな変化が必要な",
       sns: "かなりヤバい状況かも",
       gentle: "大きな変化が必要な時期ですね",
     },
@@ -358,7 +415,7 @@ export const patterns: Pattern[] = [
     variants: ["しね", "タヒ", "タヒね", "氏ね"],
     ng: true,
     replacements: {
-      business: "少々お距離を置かせていただけますと幸いです",
+      business: "少し距離を置かせていただきたい",
       sns: "しばらく離れていてほしいかな",
       gentle: "少しお互い距離を取りましょう",
     },
@@ -387,7 +444,7 @@ export const patterns: Pattern[] = [
     variants: ["さいてい"],
     ng: true,
     replacements: {
-      business: "基準を下回っております",
+      business: "少々問題のある",
       sns: "ちょっとひどすぎかも",
       gentle: "少し期待と違ってしまいました",
     },
@@ -424,7 +481,7 @@ export const patterns: Pattern[] = [
     variants: ["きもい", "きもっ", "キモっ", "気持ち悪い"],
     ng: true,
     replacements: {
-      business: "個性的でいらっしゃいます",
+      business: "個性的な",
       sns: "ちょっと独特だなぁ",
       gentle: "とてもオリジナリティのある方",
     },
@@ -432,7 +489,7 @@ export const patterns: Pattern[] = [
   {
     match: "ダサい",
     replacements: {
-      business: "独自のセンスをお持ちです",
+      business: "独自のセンスをお持ちの",
       sns: "ちょっとレトロな感じ",
       gentle: "懐かしさを感じる雰囲気",
     },
@@ -605,7 +662,7 @@ export const patterns: Pattern[] = [
     variants: ["むのう"],
     ng: true,
     replacements: {
-      business: "能力発揮の機会をまだお持ちでない方",
+      business: "まだ力を発揮しきれていない",
       sns: "ちょっと空回り気味",
       gentle: "これから力を伸ばしていける方",
     },
@@ -615,7 +672,7 @@ export const patterns: Pattern[] = [
     variants: ["うせろ"],
     ng: true,
     replacements: {
-      business: "しばらくお時間をいただけますでしょうか",
+      business: "少しお時間をいただきたい",
       sns: "ちょっと距離置かせて",
       gentle: "少し一人にさせてください",
     },
@@ -730,6 +787,38 @@ export const patterns: Pattern[] = [
       business: "感情の高ぶりがございます",
       sns: "ちょっとイラッとしてる",
       gentle: "少し気持ちが昂っています",
+    },
+  },
+  {
+    match: "なんだけど",
+    replacements: {
+      business: "なのですが",
+      sns: "なんだけど",
+      gentle: "なのですが",
+    },
+  },
+  {
+    match: "じゃん",
+    replacements: {
+      business: "ではないでしょうか",
+      sns: "じゃん",
+      gentle: "ですね",
+    },
+  },
+  {
+    match: "だろ",
+    replacements: {
+      business: "ではないでしょうか",
+      sns: "でしょ",
+      gentle: "ですね",
+    },
+  },
+  {
+    match: "だよ",
+    replacements: {
+      business: "です",
+      sns: "だよ",
+      gentle: "ですね",
     },
   },
 ];
