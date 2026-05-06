@@ -3,13 +3,7 @@
 import { useState, useEffect } from "react";
 import { convert } from "@/lib/convert";
 
-const PLACEHOLDER_EXAMPLES = [
-  "例: あいつマジでうざい、もう無理",
-  "例: お前なんで何もできないの",
-  "例: こいつほんと使えない",
-  "例: てめえ、消えろ",
-  "例: 最低、終わってる",
-];
+const PLACEHOLDER = "例: あの人、ちょっとうるさいな…";
 
 const COUNTER_KEY = "yasashii_total_count";
 
@@ -26,16 +20,12 @@ export default function Home() {
   const [feedback, setFeedback] = useState<"good" | "bad" | null>(null);
   const [shareCompare, setShareCompare] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-  const [placeholderIdx, setPlaceholderIdx] = useState(0);
+  const [showBefore, setShowBefore] = useState(false);
 
   useEffect(() => {
     try {
       setTotalCount(Number(localStorage.getItem(COUNTER_KEY) ?? "0"));
     } catch {}
-    const timer = setInterval(() => {
-      setPlaceholderIdx((i) => (i + 1) % PLACEHOLDER_EXAMPLES.length);
-    }, 3000);
-    return () => clearInterval(timer);
   }, []);
 
   const handleConvert = async () => {
@@ -47,6 +37,7 @@ export default function Home() {
     setResult(r);
     setCopied(false);
     setFeedback(null);
+    setShowBefore(false);
     setAnimating(false);
     try {
       const next = Number(localStorage.getItem(COUNTER_KEY) ?? "0") + 1;
@@ -115,24 +106,15 @@ export default function Home() {
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={PLACEHOLDER_EXAMPLES[placeholderIdx]}
+              placeholder={PLACEHOLDER}
               className="w-full min-h-[120px] resize-none rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-800 outline-none focus:border-rose-300 focus:bg-white focus:ring-2 focus:ring-rose-100"
               rows={5}
             />
           </div>
 
-          {/* 変換結果の比較表示 */}
+          {/* 変換結果の表示 */}
           {result && (
             <div className="mt-4 rounded-xl border border-slate-100 bg-slate-50 p-4">
-              <p className="mb-1 text-xs font-medium text-slate-400">変換前</p>
-              <p className="whitespace-pre-wrap text-sm text-slate-500">
-                {inputSnapshot}
-              </p>
-              <div className="my-3 flex items-center gap-2 text-slate-300">
-                <div className="h-px flex-1 bg-slate-200" />
-                <span className="text-base">↓</span>
-                <div className="h-px flex-1 bg-slate-200" />
-              </div>
               <p className="mb-1 text-xs font-medium text-rose-400">変換後</p>
               {result.hits.length === 0 ? (
                 <p className="text-xs text-amber-600">
@@ -143,6 +125,25 @@ export default function Home() {
                 <p className="whitespace-pre-wrap text-sm font-medium text-slate-800">
                   {result.output}
                 </p>
+              )}
+              <button
+                onClick={() => setShowBefore(!showBefore)}
+                className="mt-3 flex items-center gap-1 text-xs text-slate-400 hover:text-slate-600"
+              >
+                {showBefore ? "▲ 変換前を隠す" : "▼ 変換前を見る"}
+              </button>
+              {showBefore && (
+                <>
+                  <div className="my-3 flex items-center gap-2 text-slate-300">
+                    <div className="h-px flex-1 bg-slate-200" />
+                    <span className="text-base">↑</span>
+                    <div className="h-px flex-1 bg-slate-200" />
+                  </div>
+                  <p className="mb-1 text-xs font-medium text-slate-400">変換前</p>
+                  <p className="whitespace-pre-wrap text-sm text-slate-500">
+                    {inputSnapshot}
+                  </p>
+                </>
               )}
             </div>
           )}
