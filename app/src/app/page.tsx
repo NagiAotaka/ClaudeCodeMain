@@ -7,12 +7,6 @@ import type { Pattern } from "@/data/patterns";
 const PLACEHOLDER = "例: あの人、ちょっとうるさいな…";
 const COUNTER_KEY = "yasashii_total_count";
 
-function mergePatterns(base: Pattern[], incoming: Pattern[]): Pattern[] {
-  const map = new Map(base.map((p) => [p.match, p]));
-  for (const p of incoming) map.set(p.match, p);
-  return Array.from(map.values());
-}
-
 export default function Home() {
   const [input, setInput] = useState("");
   const [inputSnapshot, setInputSnapshot] = useState("");
@@ -24,7 +18,6 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
   const [aiToast, setAiToast] = useState(false);
   const [feedback, setFeedback] = useState<"good" | "bad" | null>(null);
-  const [badQueued, setBadQueued] = useState(false);
   const [shareCompare, setShareCompare] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [showBefore, setShowBefore] = useState(false);
@@ -36,8 +29,7 @@ export default function Home() {
       setTotalCount(Number(localStorage.getItem(COUNTER_KEY) ?? "0"));
     } catch {}
 
-    // 学習済みパターンをサーバーから取得
-    fetch("/api/haiku-convert")
+    fetch("/learned-patterns.json")
       .then((r) => r.json())
       .then((data: Pattern[]) => {
         if (Array.isArray(data) && data.length > 0) setLearnedPatterns(data);
@@ -56,7 +48,6 @@ export default function Home() {
     setResult(r);
     setCopied(false);
     setFeedback(null);
-    setBadQueued(false);
     setShowBefore(false);
 
     try {
@@ -95,26 +86,9 @@ export default function Home() {
     setTimeout(() => setAiToast(false), 2000);
   };
 
-  const handleFeedback = async (type: "good" | "bad") => {
+  const handleFeedback = (type: "good" | "bad") => {
     setFeedback(type);
-
     if (!result) return;
-
-    if (type === "bad" && result.hits.length > 0) {
-      try {
-        const res = await fetch("/api/haiku-convert", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            input: inputSnapshot,
-            currentOutput: result.output,
-            hits: result.hits.map(({ match, replacement }) => ({ match, replacement })),
-          }),
-        });
-        if (res.ok) setBadQueued(true);
-      } catch {}
-    }
-
     try {
       localStorage.setItem(
         `feedback_${Date.now()}`,
@@ -122,10 +96,33 @@ export default function Home() {
           type,
           input: inputSnapshot,
           output: result.output,
+          hits: result.hits,
           ts: Date.now(),
         })
       );
     } catch {}
+  };
+
+  const handleExportBadList = () => {
+    const items: unknown[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key?.startsWith("feedback_")) continue;
+      try {
+        const data = JSON.parse(localStorage.getItem(key) ?? "");
+        if (data.type === "bad") items.push(data);
+      } catch {}
+    }
+    if (items.length === 0) return;
+    const blob = new Blob([JSON.stringify(items, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `bad-feedback-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const handleShare = () => {
@@ -311,10 +308,18 @@ export default function Home() {
                   👎
                 </button>
               </div>
-              {badQueued && (
-                <p className="mt-1 text-center text-xs text-slate-400">
-                  📝 改善候補として記録しました。次回のルーティンで反映されます。
-                </p>
+              {feedback === "bad" && (
+                <div className="mt-1 text-center">
+                  <p className="text-xs text-slate-400">
+                    📝 改善候補として記録されました
+                  </p>
+                  <button
+                    onClick={handleExportBadList}
+                    className="mt-1 text-xs text-indigo-400 underline hover:text-indigo-600"
+                  >
+                    ルーティン用にエクスポート
+                  </button>
+                </div>
               )}
             </>
           )}

@@ -16,17 +16,23 @@ for (const p of patterns) {
 }
 staticEntries.sort((a, b) => b.key.length - a.key.length);
 
+let cachedExtra: Pattern[] | null = null;
+let cachedEntries: MatchEntry[] | null = null;
+
 function buildEntries(extraPatterns: Pattern[]): MatchEntry[] {
   if (extraPatterns.length === 0) return staticEntries;
+  if (cachedExtra === extraPatterns) return cachedEntries!;
   const map = new Map<string, Pattern>();
   for (const e of staticEntries) map.set(e.key, e.pattern);
   for (const p of extraPatterns) {
     map.set(p.match, p);
     for (const v of p.variants ?? []) map.set(v, p);
   }
-  return Array.from(map.entries())
+  cachedEntries = Array.from(map.entries())
     .map(([key, pattern]) => ({ key, pattern }))
     .sort((a, b) => b.key.length - a.key.length);
+  cachedExtra = extraPatterns;
+  return cachedEntries;
 }
 
 export function convert(input: string, extraPatterns: Pattern[] = []): ConvertResult {

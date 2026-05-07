@@ -1,10 +1,11 @@
 /**
- * 手動ルーティン実行スクリプト
- * 使い方: cd app && npx tsx scripts/run-routine.ts
+ * ルーティンスクリプト
+ * 使い方: cd app && npx tsx scripts/run-routine.ts --input <bad-feedback.json>
  *
- * - bad-queue.json のアイテムを Haiku で処理
- * - 結果を learned-patterns.json に保存
- * - 処理後にキューをクリア
+ * 1. ブラウザで 👎 → 「ルーティン用にエクスポート」ボタンで JSON をダウンロード
+ * 2. このスクリプトに --input で渡す
+ * 3. Haiku が改善パターンを生成し public/learned-patterns.json に保存
+ * 4. ページリロードで反映
  */
 
 import Anthropic from "@anthropic-ai/sdk";
@@ -14,8 +15,7 @@ import * as dotenv from "dotenv";
 
 dotenv.config({ path: path.join(__dirname, "../.env.local") });
 
-const learnedPath = path.join(__dirname, "../src/data/learned-patterns.json");
-const queuePath = path.join(__dirname, "../src/data/bad-queue.json");
+const learnedPath = path.join(__dirname, "../public/learned-patterns.json");
 
 type Mode = "business" | "sns" | "gentle";
 
@@ -27,8 +27,9 @@ type Pattern = {
 };
 
 type QueueItem = {
+  type: string;
   input: string;
-  currentOutput: string;
+  output: string;
   hits: { match: string; replacement: string }[];
   ts: number;
 };
@@ -64,7 +65,7 @@ function buildUserPrompt(items: QueueItem[]): string {
   for (const item of items) {
     for (const hit of item.hits) {
       const entry = uniqueHits.get(hit.match) ?? { replacement: hit.replacement, contexts: [] };
-      entry.contexts.push(`「${item.input}」→「${item.currentOutput}」`);
+      entry.contexts.push(`「${item.input}」→「${item.output}」`);
       uniqueHits.set(hit.match, entry);
     }
   }
@@ -84,14 +85,25 @@ function mergePatterns(base: Pattern[], incoming: Pattern[]): Pattern[] {
 }
 
 async function main() {
-  const queue = readJson<QueueItem[]>(queuePath, []);
+  const args = process.argv.slice(2);
+  const inputFlag = args.indexOf("--input");
+  const inputFile = inputFlag !== -1 ? args[inputFlag + 1] : null;
+
+  if (!inputFile) {
+    console.error("❌ 使い方: npx tsx scripts/run-routine.ts --input <bad-feedback.json>");
+    console.error("   ブラウザの「ルーティン用にエクスポート」ボタンでファイルを取得してください。");
+    process.exit(1);
+  }
+
+  const allItems = readJson<QueueItem[]>(inputFile, []);
+  const queue = allItems.filter((item) => item.type === "bad" && item.hits?.length > 0);
 
   if (queue.length === 0) {
-    console.log("✅ キューは空です。処理するアイテムがありません。");
+    console.log("✅ Bad フィードバックが見つかりません。処理するアイテムがありません。");
     return;
   }
 
-  console.log(`📋 キュー件数: ${queue.length} 件`);
+  console.log(`📋 Bad フィードバック: ${queue.length} 件`);
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
@@ -129,13 +141,13 @@ async function main() {
   const learned = readJson<Pattern[]>(learnedPath, []);
   const merged = mergePatterns(learned, newPatterns);
   writeJson(learnedPath, merged);
-  writeJson(queuePath, []);
 
   console.log(`✅ 完了: ${queue.length} 件処理 / ${newPatterns.length} パターン生成 / 累計 ${merged.length} パターン`);
   console.log("📝 新しいパターン:");
   for (const p of newPatterns) {
     console.log(`  ${p.match}: gentle="${p.replacements.gentle}" / business="${p.replacements.business}" / sns="${p.replacements.sns}"`);
   }
+  console.log("\n→ ページをリロードすると学習済みパターンが反映されます。");
 }
 
 main().catch((err) => {
