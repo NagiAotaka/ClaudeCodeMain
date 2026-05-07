@@ -103,28 +103,6 @@ export default function Home() {
     } catch {}
   };
 
-  const handleExportBadList = () => {
-    const items: unknown[] = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (!key?.startsWith("feedback_")) continue;
-      try {
-        const data = JSON.parse(localStorage.getItem(key) ?? "");
-        if (data.type === "bad") items.push(data);
-      } catch {}
-    }
-    if (items.length === 0) return;
-    const blob = new Blob([JSON.stringify(items, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `bad-feedback-${Date.now()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
   const handleShare = () => {
     if (!result) return;
     const text = shareCompare
@@ -191,11 +169,6 @@ export default function Home() {
                         {inputSnapshot}
                       </p>
                     </div>
-                  )}
-                  {learnedPatterns.length > 0 && (
-                    <p className="mt-2 text-xs text-indigo-400">
-                      ✨ 学習済みパターン {learnedPatterns.length} 件を使用中
-                    </p>
                   )}
                 </>
               )}
@@ -282,44 +255,28 @@ export default function Home() {
               </div>
 
               {/* フィードバック */}
-              <div className="mt-2 flex items-center justify-center gap-3">
-                <span className="text-xs text-slate-400">
-                  この変換はどうでしたか？
-                </span>
-                <button
-                  onClick={() => handleFeedback("good")}
-                  className={`rounded-full px-3 py-1 text-sm transition ${
-                    feedback === "good"
-                      ? "bg-green-100 text-green-700"
-                      : "text-slate-400 hover:text-green-600"
-                  }`}
-                >
-                  👍
-                </button>
-                <button
-                  onClick={() => handleFeedback("bad")}
-                  disabled={feedback === "bad"}
-                  className={`rounded-full px-3 py-1 text-sm transition ${
-                    feedback === "bad"
-                      ? "bg-red-100 text-red-600"
-                      : "text-slate-400 hover:text-red-500"
-                  }`}
-                >
-                  👎
-                </button>
-              </div>
-              {feedback === "bad" && (
-                <div className="mt-1 text-center">
-                  <p className="text-xs text-slate-400">
-                    📝 改善候補として記録されました
-                  </p>
+              {!feedback ? (
+                <div className="mt-2 flex items-center justify-center gap-3">
+                  <span className="text-xs text-slate-400">
+                    この変換はどうでしたか？
+                  </span>
                   <button
-                    onClick={handleExportBadList}
-                    className="mt-1 text-xs text-indigo-400 underline hover:text-indigo-600"
+                    onClick={() => handleFeedback("good")}
+                    className="rounded-full px-3 py-1 text-sm text-slate-400 transition hover:text-green-600"
                   >
-                    ルーティン用にエクスポート
+                    👍
+                  </button>
+                  <button
+                    onClick={() => handleFeedback("bad")}
+                    className="rounded-full px-3 py-1 text-sm text-slate-400 transition hover:text-red-500"
+                  >
+                    👎
                   </button>
                 </div>
+              ) : (
+                <p className="mt-2 text-center text-xs text-slate-400">
+                  使っていただきありがとうございます
+                </p>
               )}
             </>
           )}
