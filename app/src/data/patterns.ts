@@ -8,70 +8,14 @@ export type Pattern = {
 };
 
 export const patterns: Pattern[] = [
-  {
-    match: "てめえ",
-    variants: ["てめー", "テメエ", "テメー"],
-    ng: true,
-    replacements: {
-      business: "あなた",
-      sns: "あなた",
-      gentle: "あなた",
-    },
-  },
-  {
-    match: "あいつ",
-    ng: true,
-    replacements: {
-      business: "あの方",
-      sns: "あの人",
-      gentle: "あの方",
-    },
-  },
-  {
-    match: "こいつ",
-    ng: true,
-    replacements: {
-      business: "この方",
-      sns: "この人",
-      gentle: "この方",
-    },
-  },
-  {
-    match: "そいつ",
-    ng: true,
-    replacements: {
-      business: "その方",
-      sns: "その人",
-      gentle: "その方",
-    },
-  },
-  {
-    match: "お前",
-    variants: ["おまえ"],
-    ng: true,
-    replacements: {
-      business: "あなた",
-      sns: "あなた",
-      gentle: "あなた",
-    },
-  },
-  {
-    match: "やつ",
-    variants: ["奴"],
-    ng: true,
-    replacements: {
-      business: "その方",
-      sns: "その人",
-      gentle: "その方",
-    },
-  },
+  // ── 複合語（長い順・先にマッチさせる） ──────────────────────────
   {
     match: "は？意味わからん",
     ng: true,
     replacements: {
       business: "申し訳ございませんが、もう少し詳細をいただけますでしょうか",
       sns: "ごめん、ちょっと飲み込めない",
-      gentle: "もう少し噛み砕いて教えていただけますか",
+      gentle: "もう少し噛み砕いて",
     },
   },
   {
@@ -80,7 +24,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "強い不快感を覚えております",
       sns: "もう本気で困ってる",
-      gentle: "心からつらい気持ちです",
+      gentle: "情熱あふれる",
     },
   },
   {
@@ -154,16 +98,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "申し訳ございませんが、ご対応に苦慮しております",
       sns: "うーん、ちょっと負担感あるかも",
-      gentle: "少し息が詰まる感じです",
-    },
-  },
-  {
-    match: "は？",
-    ng: true,
-    replacements: {
-      business: "もう一度ご説明いただけますでしょうか",
-      sns: "ん？どういうこと？",
-      gentle: "もう少し詳しく教えてください",
+      gentle: "元気あふれる",
     },
   },
   {
@@ -172,7 +107,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "自由な発想をお持ちの",
       sns: "ちょっと独特な発想だね",
-      gentle: "とても自由な発想ですね",
+      gentle: "自由あふれる",
     },
   },
   {
@@ -182,7 +117,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "独自の発想をお持ちの",
       sns: "ちょっと独自の世界観",
-      gentle: "ユニークな考え方をお持ち",
+      gentle: "ユニーク",
     },
   },
   {
@@ -190,7 +125,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "現状での対応が限界に達しております",
       sns: "そろそろ限界かも",
-      gentle: "少し休ませてください",
+      gentle: "充電が必要",
     },
   },
   {
@@ -199,7 +134,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "お早めのご対応をお願いいたします",
       sns: "ちょっと急いでもらえると助かる〜",
-      gentle: "もう少し早めだと嬉しいです",
+      gentle: "急いで",
     },
   },
   {
@@ -208,7 +143,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "熱意あふれる",
       sns: "ちょっと粘り強めかも",
-      gentle: "少し情熱的な感じ",
+      gentle: "情熱あふれる",
     },
   },
   {
@@ -217,7 +152,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "工程に検討の余地がございます",
       sns: "ちょっと腰が重いかも",
-      gentle: "少し気力が必要な感じ",
+      gentle: "味わい深い",
     },
   },
   {
@@ -227,7 +162,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "真摯なご対応をお願いいたします",
       sns: "もう、ちゃんとしてほしい〜",
-      gentle: "少し真剣にお話ししたいです",
+      gentle: "真剣にして",
     },
   },
   {
@@ -236,15 +171,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "軽視されているように感じられます",
       sns: "ちょっと見くびってない？",
-      gentle: "少し物足りなさを感じています",
-    },
-  },
-  {
-    match: "嫌がらせ",
-    replacements: {
-      business: "好ましくない働きかけがございます",
-      sns: "ちょっと困った絡まれ方",
-      gentle: "少し心配な状況です",
+      gentle: "刺激あふれる",
     },
   },
   {
@@ -263,7 +190,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "少しの間、ご静粛にお願いいたします",
       sns: "ちょっと聞き役に回って〜",
-      gentle: "少し耳を傾けてもらえますか",
+      gentle: "静かに聴いて",
     },
   },
   {
@@ -281,7 +208,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "少々お席を外していただけますでしょうか",
       sns: "ちょっと距離取ってほしいかも",
-      gentle: "少しお互いのスペースが必要かな",
+      gentle: "少し離れて",
     },
   },
   {
@@ -290,7 +217,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "大きな変化が必要な",
       sns: "かなりヤバい状況かも",
-      gentle: "大きな変化が必要な時期ですね",
+      gentle: "進化中",
     },
   },
   {
@@ -298,7 +225,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "理解にもう少し情報が必要です",
       sns: "ちょっと飲み込めないかも",
-      gentle: "もう少し教えてもらえると嬉しい",
+      gentle: "ユニーク",
     },
   },
   {
@@ -306,7 +233,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "理解の整理が必要です",
       sns: "ちょっと迷子かも",
-      gentle: "もう少し考えさせてください",
+      gentle: "奥深い",
     },
   },
   {
@@ -314,7 +241,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "繰り返しによる疲労を感じております",
       sns: "ちょっと飽きてきたかも",
-      gentle: "少し気力が必要な状況",
+      gentle: "充電",
     },
   },
   {
@@ -322,7 +249,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "ストレスを感じております",
       sns: "ちょっとモヤモヤ",
-      gentle: "少し心がざわついています",
+      gentle: "わくわく",
     },
   },
   {
@@ -331,7 +258,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "刺激にやや欠ける印象です",
       sns: "ちょっと地味かも",
-      gentle: "落ち着いた雰囲気ですね",
+      gentle: "味わい深い",
     },
   },
   {
@@ -339,7 +266,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "非常に負荷が高い状況です",
       sns: "かなりしんどいかも",
-      gentle: "とても大変な状況ですね",
+      gentle: "充電が必要",
     },
   },
   {
@@ -347,7 +274,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "相当の負荷がかかっております",
       sns: "ちょっとしんどいかも〜",
-      gentle: "少し疲れを感じています",
+      gentle: "充電中",
     },
   },
   {
@@ -356,7 +283,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "強い憤りを感じております",
       sns: "もうほんとに限界",
-      gentle: "感情の整理が必要な状況です",
+      gentle: "情熱あふれる",
     },
   },
   {
@@ -366,7 +293,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "状況の説明をお願いいたします",
       sns: "ちょっと、どういうこと？",
-      gentle: "もう少し教えていただけますか",
+      gentle: "どうしたの",
     },
   },
   {
@@ -375,9 +302,70 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "想定の範囲外でございます",
       sns: "ちょっと予想外かも",
-      gentle: "少し驚きの展開ですね",
+      gentle: "新鮮",
     },
   },
+
+  // ── 人称代名詞 ────────────────────────────────────────────────
+  {
+    match: "てめえ",
+    variants: ["てめー", "テメエ", "テメー"],
+    ng: true,
+    replacements: {
+      business: "あなた",
+      sns: "あなた",
+      gentle: "あなた",
+    },
+  },
+  {
+    match: "あいつ",
+    ng: true,
+    replacements: {
+      business: "あの方",
+      sns: "あの人",
+      gentle: "あの方",
+    },
+  },
+  {
+    match: "こいつ",
+    ng: true,
+    replacements: {
+      business: "この方",
+      sns: "この人",
+      gentle: "この方",
+    },
+  },
+  {
+    match: "そいつ",
+    ng: true,
+    replacements: {
+      business: "その方",
+      sns: "その人",
+      gentle: "その方",
+    },
+  },
+  {
+    match: "お前",
+    variants: ["おまえ"],
+    ng: true,
+    replacements: {
+      business: "あなた",
+      sns: "あなた",
+      gentle: "あなた",
+    },
+  },
+  {
+    match: "やつ",
+    variants: ["奴"],
+    ng: true,
+    replacements: {
+      business: "その方",
+      sns: "その人",
+      gentle: "その方",
+    },
+  },
+
+  // ── 罵倒語（単語） ────────────────────────────────────────────
   {
     match: "バカ",
     variants: ["ばか", "バーカ", "ばーか", "バァカ", "馬鹿", "馬カ"],
@@ -405,7 +393,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "音量を控えていただけますか",
       sns: "ちょっと声大きいよ〜",
-      gentle: "もう少し穏やかに",
+      gentle: "にぎやか",
     },
   },
   {
@@ -435,7 +423,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "やや負担を感じております",
       sns: "ちょっと圧多めかも",
-      gentle: "少しエネルギーが強めかな",
+      gentle: "元気あふれる",
     },
   },
   {
@@ -455,7 +443,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "少し距離を置かせていただきたい",
       sns: "しばらく離れていてほしいかな",
-      gentle: "少しお互い距離を取りましょう",
+      gentle: "少し休んで",
     },
   },
   {
@@ -464,7 +452,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "強い不快感を表明いたします",
       sns: "もう、本気で困ってる",
-      gentle: "心からつらく感じています",
+      gentle: "情熱あふれる",
     },
   },
   {
@@ -494,7 +482,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "心穏やかでいられない状況です",
       sns: "ちょっとモヤッとしてる",
-      gentle: "少し心がざわついています",
+      gentle: "情熱あふれる",
     },
   },
   {
@@ -502,7 +490,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "感情の整理が必要な状況です",
       sns: "ちょっとイラッとしちゃった",
-      gentle: "少し気持ちが昂っています",
+      gentle: "情熱あふれる",
     },
   },
   {
@@ -511,7 +499,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "少しの間、お静かにしていただけますか",
       sns: "ちょっと一旦落ち着こ？",
-      gentle: "そっと耳を傾けてみませんか",
+      gentle: "静かに聴いて",
     },
   },
   {
@@ -537,7 +525,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "現在エネルギーの充電が必要です",
       sns: "ちょっとペース落としたいかも",
-      gentle: "少し休憩を取りたい気分",
+      gentle: "充電中",
     },
   },
   {
@@ -545,7 +533,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "工程の見直しが必要です",
       sns: "ちょっと手間かも",
-      gentle: "少し時間がかかりそう",
+      gentle: "独特",
     },
   },
   {
@@ -554,7 +542,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "ご一考いただけますでしょうか",
       sns: "ちょっと待ってほしいかも",
-      gentle: "一度立ち止まってみませんか",
+      gentle: "考え直して",
     },
   },
   {
@@ -562,7 +550,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "苦手意識がございます",
       sns: "ちょっと得意じゃないかも",
-      gentle: "少し距離を感じています",
+      gentle: "ユニーク",
     },
   },
   {
@@ -570,7 +558,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "前向きな検討が難しい状況です",
       sns: "うーん、気が乗らないかも",
-      gentle: "ちょっと気持ちの準備が必要",
+      gentle: "まだ準備中",
     },
   },
   {
@@ -579,7 +567,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "対応が困難な状況でございます",
       sns: "ちょっと厳しいかも〜",
-      gentle: "少し荷が重い感じ",
+      gentle: "充電が必要",
     },
   },
   {
@@ -588,7 +576,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "看過できない状況です",
       sns: "ちょっと大ごとかも",
-      gentle: "少し気にかかる事態",
+      gentle: "刺激的",
     },
   },
   {
@@ -596,7 +584,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "誠に遺憾な状況でございます",
       sns: "ちょっと悲しい〜",
-      gentle: "少し心が痛みます",
+      gentle: "独特",
     },
   },
   {
@@ -604,7 +592,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "再考の余地がございます",
       sns: "うーん、ちょっと違うかも",
-      gentle: "もう少し時間が必要かな",
+      gentle: "熟成中",
     },
   },
   {
@@ -612,7 +600,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "改善の必要がございます",
       sns: "ちょっと惜しい感じ",
-      gentle: "もう一歩工夫したい",
+      gentle: "個性的",
     },
   },
   {
@@ -620,7 +608,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "認識に相違がございます",
       sns: "ちょっと話が噛み合ってないかも",
-      gentle: "少し方向性が違うようです",
+      gentle: "ユニーク",
     },
   },
   {
@@ -628,7 +616,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "確認が必要な点がございます",
       sns: "ちょっと不思議だなぁ",
-      gentle: "少し気になるところがあります",
+      gentle: "個性的",
     },
   },
   {
@@ -637,7 +625,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "事実関係に確認が必要です",
       sns: "ほんとに〜？",
-      gentle: "少し驚きました",
+      gentle: "サプライズ",
     },
   },
   {
@@ -645,7 +633,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "業務から距離を取られているご様子",
       sns: "ちょっと一息ついてる感じ",
-      gentle: "少し休憩中のようです",
+      gentle: "充電中",
     },
   },
   {
@@ -653,7 +641,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "進捗にやや遅れが見られます",
       sns: "ちょっとゆっくりめ",
-      gentle: "じっくり丁寧に進めていますね",
+      gentle: "じっくり派",
     },
   },
   {
@@ -663,7 +651,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "感情のコントロールが難しい状況です",
       sns: "ちょっと我慢の限界",
-      gentle: "気持ちがあふれてしまいました",
+      gentle: "情熱あふれる",
     },
   },
   {
@@ -672,7 +660,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "活用方法の見直しが必要です",
       sns: "ちょっと使いみちが難しい",
-      gentle: "別の見方が必要かもしれません",
+      gentle: "原石",
     },
   },
   {
@@ -682,7 +670,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "成長の伸びしろが大きい方",
       sns: "ちょっと困ったちゃん",
-      gentle: "まだ磨かれていない原石",
+      gentle: "原石",
     },
   },
   {
@@ -730,7 +718,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "視覚的に注意が向いてしまいます",
       sns: "ちょっと気になっちゃう",
-      gentle: "存在感がありますね",
+      gentle: "存在感あふれる",
     },
   },
   {
@@ -738,15 +726,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "技術的に成長余地がございます",
       sns: "ちょっと伸びしろある感じ",
-      gentle: "これから上達していきそう",
-    },
-  },
-  {
-    match: "怒られた",
-    replacements: {
-      business: "ご指摘を頂戴いたしました",
-      sns: "ちょっと注意されちゃった",
-      gentle: "アドバイスをいただきました",
+      gentle: "伸び代光る",
     },
   },
   {
@@ -782,7 +762,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "存在感のある体格をお持ちです",
       sns: "ふくよかで親しみやすい",
-      gentle: "あたたかみのある雰囲気",
+      gentle: "ふくよか",
     },
   },
   {
@@ -791,7 +771,26 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "知的な印象の頭部をお持ちです",
       sns: "渋カッコいい感じ",
-      gentle: "落ち着いた大人の魅力",
+      gentle: "知的",
+    },
+  },
+
+  // ── 感情・状態語 ──────────────────────────────────────────────
+  {
+    match: "は？",
+    ng: true,
+    replacements: {
+      business: "もう一度ご説明いただけますでしょうか",
+      sns: "ん？どういうこと？",
+      gentle: "えっと",
+    },
+  },
+  {
+    match: "怒られた",
+    replacements: {
+      business: "ご指摘を頂戴いたしました",
+      sns: "ちょっと注意されちゃった",
+      gentle: "アドバイスをいただきました",
     },
   },
   {
@@ -800,7 +799,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "心身への負荷が大きい状況です",
       sns: "ちょっとしんどいかも",
-      gentle: "大変な思いをされているんですね",
+      gentle: "勇気あふれる",
     },
   },
   {
@@ -808,9 +807,19 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "驚きを禁じえません",
       sns: "ほんとに〜！",
-      gentle: "とても驚きました",
+      gentle: "新鮮",
     },
   },
+  {
+    match: "嫌がらせ",
+    replacements: {
+      business: "好ましくない働きかけがございます",
+      sns: "ちょっと困った絡まれ方",
+      gentle: "個性発揮",
+    },
+  },
+
+  // ── 副詞・助動詞・語尾 ───────────────────────────────────────
   {
     match: "マジで",
     replacements: {
@@ -824,7 +833,7 @@ export const patterns: Pattern[] = [
     replacements: {
       business: "感情の高ぶりがございます",
       sns: "ちょっとイラッとしてる",
-      gentle: "少し気持ちが昂っています",
+      gentle: "情熱あふれる",
     },
   },
   {

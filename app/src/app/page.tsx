@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { convert } from "@/lib/convert";
 
 const PLACEHOLDER = "例: あの人、ちょっとうるさいな…";
-
 const COUNTER_KEY = "yasashii_total_count";
 
 export default function Home() {
@@ -21,6 +20,7 @@ export default function Home() {
   const [shareCompare, setShareCompare] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [showBefore, setShowBefore] = useState(false);
+  const animatingRef = useRef(false);
 
   useEffect(() => {
     try {
@@ -29,21 +29,41 @@ export default function Home() {
   }, []);
 
   const handleConvert = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || animatingRef.current) return;
+    animatingRef.current = true;
     setAnimating(true);
-    await new Promise((r) => setTimeout(r, 325));
+
     const r = convert(input);
-    setInputSnapshot(input);
+    const original = input;
+    setInputSnapshot(original);
     setResult(r);
     setCopied(false);
     setFeedback(null);
     setShowBefore(false);
-    setAnimating(false);
+
     try {
       const next = Number(localStorage.getItem(COUNTER_KEY) ?? "0") + 1;
       localStorage.setItem(COUNTER_KEY, String(next));
       setTotalCount(next);
     } catch {}
+
+    if (r.hits.length > 0) {
+      // 単語ごとに順番に書き換えるアニメーション
+      const states: string[] = [original];
+      let current = original;
+      for (const hit of r.hits) {
+        current = current.split(hit.match).join(hit.replacement);
+        states.push(current);
+      }
+      const delay = Math.max(180, Math.min(450, 1100 / r.hits.length));
+      for (let i = 1; i < states.length; i++) {
+        await new Promise<void>((resolve) => setTimeout(resolve, delay));
+        setInput(states[i]);
+      }
+    }
+
+    animatingRef.current = false;
+    setAnimating(false);
   };
 
   const handleCopy = async () => {
@@ -64,7 +84,12 @@ export default function Home() {
       try {
         localStorage.setItem(
           `feedback_${Date.now()}`,
-          JSON.stringify({ type, output: result.output, ts: Date.now() })
+          JSON.stringify({
+            type,
+            input: inputSnapshot,
+            output: result.output,
+            ts: Date.now(),
+          })
         );
       } catch {}
     }
@@ -101,48 +126,42 @@ export default function Home() {
         </header>
 
         <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-          {/* 入力エリア */}
-          <div className={animating ? "animate-cloud" : ""}>
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={PLACEHOLDER}
-              className="w-full min-h-[120px] resize-none rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-800 outline-none focus:border-rose-300 focus:bg-white focus:ring-2 focus:ring-rose-100"
-              rows={5}
-            />
-          </div>
+          {/* 入力エリア — アニメーション中は変換後テキストに書き換わる */}
+          <textarea
+            value={input}
+            onChange={(e) => !animating && setInput(e.target.value)}
+            placeholder={PLACEHOLDER}
+            readOnly={animating}
+            className={`w-full min-h-[120px] resize-none rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-800 outline-none transition focus:border-rose-300 focus:bg-white focus:ring-2 focus:ring-rose-100 ${
+              animating ? "cursor-wait opacity-75" : ""
+            }`}
+            rows={5}
+          />
 
-          {/* 変換結果の表示 */}
+          {/* 変換結果エリア（変換後のみ表示。入力欄が書き換わるので補助的） */}
           {result && (
             <div className="mt-4 rounded-xl border border-slate-100 bg-slate-50 p-4">
-              <p className="mb-1 text-xs font-medium text-rose-400">変換後</p>
               {result.hits.length === 0 ? (
                 <p className="text-xs text-amber-600">
                   辞書に該当する表現が見つかりませんでした。今後 AI
                   変換に対応予定です。
                 </p>
               ) : (
-                <p className="whitespace-pre-wrap text-sm font-medium text-slate-800">
-                  {result.output}
-                </p>
-              )}
-              <button
-                onClick={() => setShowBefore(!showBefore)}
-                className="mt-3 flex items-center gap-1 text-xs text-slate-400 hover:text-slate-600"
-              >
-                {showBefore ? "▲ 変換前を隠す" : "▼ 変換前を見る"}
-              </button>
-              {showBefore && (
                 <>
-                  <div className="my-3 flex items-center gap-2 text-slate-300">
-                    <div className="h-px flex-1 bg-slate-200" />
-                    <span className="text-base">↑</span>
-                    <div className="h-px flex-1 bg-slate-200" />
-                  </div>
-                  <p className="mb-1 text-xs font-medium text-slate-400">変換前</p>
-                  <p className="whitespace-pre-wrap text-sm text-slate-500">
-                    {inputSnapshot}
-                  </p>
+                  <button
+                    onClick={() => setShowBefore(!showBefore)}
+                    className="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-600"
+                  >
+                    {showBefore ? "▲ 変換前を隠す" : "▼ 変換前を見る"}
+                  </button>
+                  {showBefore && (
+                    <div className="mt-3">
+                      <p className="mb-1 text-xs font-medium text-slate-400">変換前</p>
+                      <p className="whitespace-pre-wrap text-sm text-slate-500">
+                        {inputSnapshot}
+                      </p>
+                    </div>
+                  )}
                 </>
               )}
             </div>
