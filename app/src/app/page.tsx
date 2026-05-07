@@ -2,9 +2,16 @@
 
 import { useState, useEffect, useRef } from "react";
 import { convert } from "@/lib/convert";
+import type { Pattern } from "@/data/patterns";
 
 const PLACEHOLDER = "例: あの人、ちょっとうるさいな…";
 const COUNTER_KEY = "yasashii_total_count";
+
+function mergePatterns(base: Pattern[], incoming: Pattern[]): Pattern[] {
+  const map = new Map(base.map((p) => [p.match, p]));
+  for (const p of incoming) map.set(p.match, p);
+  return Array.from(map.values());
+}
 
 export default function Home() {
   const [input, setInput] = useState("");
@@ -17,15 +24,25 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
   const [aiToast, setAiToast] = useState(false);
   const [feedback, setFeedback] = useState<"good" | "bad" | null>(null);
+  const [badQueued, setBadQueued] = useState(false);
   const [shareCompare, setShareCompare] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [showBefore, setShowBefore] = useState(false);
+  const [learnedPatterns, setLearnedPatterns] = useState<Pattern[]>([]);
   const animatingRef = useRef(false);
 
   useEffect(() => {
     try {
       setTotalCount(Number(localStorage.getItem(COUNTER_KEY) ?? "0"));
     } catch {}
+
+    // 学習済みパターンをサーバーから取得
+    fetch("/api/haiku-convert")
+      .then((r) => r.json())
+      .then((data: Pattern[]) => {
+        if (Array.isArray(data) && data.length > 0) setLearnedPatterns(data);
+      })
+      .catch(() => {});
   }, []);
 
   const handleConvert = async () => {
@@ -33,12 +50,13 @@ export default function Home() {
     animatingRef.current = true;
     setAnimating(true);
 
-    const r = convert(input);
+    const r = convert(input, learnedPatterns);
     const original = input;
     setInputSnapshot(original);
     setResult(r);
     setCopied(false);
     setFeedback(null);
+    setBadQueued(false);
     setShowBefore(false);
 
     try {
@@ -48,7 +66,6 @@ export default function Home() {
     } catch {}
 
     if (r.hits.length > 0) {
-      // 単語ごとに順番に書き換えるアニメーション
       const states: string[] = [original];
       let current = original;
       for (const hit of r.hits) {
@@ -78,21 +95,37 @@ export default function Home() {
     setTimeout(() => setAiToast(false), 2000);
   };
 
-  const handleFeedback = (type: "good" | "bad") => {
+  const handleFeedback = async (type: "good" | "bad") => {
     setFeedback(type);
-    if (result) {
+
+    if (!result) return;
+
+    if (type === "bad" && result.hits.length > 0) {
       try {
-        localStorage.setItem(
-          `feedback_${Date.now()}`,
-          JSON.stringify({
-            type,
+        const res = await fetch("/api/haiku-convert", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
             input: inputSnapshot,
-            output: result.output,
-            ts: Date.now(),
-          })
-        );
+            currentOutput: result.output,
+            hits: result.hits.map(({ match, replacement }) => ({ match, replacement })),
+          }),
+        });
+        if (res.ok) setBadQueued(true);
       } catch {}
     }
+
+    try {
+      localStorage.setItem(
+        `feedback_${Date.now()}`,
+        JSON.stringify({
+          type,
+          input: inputSnapshot,
+          output: result.output,
+          ts: Date.now(),
+        })
+      );
+    } catch {}
   };
 
   const handleShare = () => {
@@ -126,7 +159,7 @@ export default function Home() {
         </header>
 
         <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-          {/* 入力エリア — アニメーション中は変換後テキストに書き換わる */}
+          {/* 入力エリア */}
           <textarea
             value={input}
             onChange={(e) => !animating && setInput(e.target.value)}
@@ -138,7 +171,7 @@ export default function Home() {
             rows={5}
           />
 
-          {/* 変換結果エリア（変換後のみ表示。入力欄が書き換わるので補助的） */}
+          {/* 変換結果エリア */}
           {result && (
             <div className="mt-4 rounded-xl border border-slate-100 bg-slate-50 p-4">
               {result.hits.length === 0 ? (
@@ -161,6 +194,11 @@ export default function Home() {
                         {inputSnapshot}
                       </p>
                     </div>
+                  )}
+                  {learnedPatterns.length > 0 && (
+                    <p className="mt-2 text-xs text-indigo-400">
+                      ✨ 学習済みパターン {learnedPatterns.length} 件を使用中
+                    </p>
                   )}
                 </>
               )}
@@ -263,6 +301,7 @@ export default function Home() {
                 </button>
                 <button
                   onClick={() => handleFeedback("bad")}
+                  disabled={feedback === "bad"}
                   className={`rounded-full px-3 py-1 text-sm transition ${
                     feedback === "bad"
                       ? "bg-red-100 text-red-600"
@@ -272,6 +311,11 @@ export default function Home() {
                   👎
                 </button>
               </div>
+              {badQueued && (
+                <p className="mt-1 text-center text-xs text-slate-400">
+                  📝 改善候補として記録しました。次回のルーティンで反映されます。
+                </p>
+              )}
             </>
           )}
         </section>
