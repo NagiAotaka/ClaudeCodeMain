@@ -29,6 +29,15 @@ export default function Home() {
       setTotalCount(Number(localStorage.getItem(COUNTER_KEY) ?? "0"));
     } catch {}
 
+    try {
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i);
+        if (!key?.startsWith("feedback_")) continue;
+        const data = JSON.parse(localStorage.getItem(key) ?? "{}");
+        if (!data.input) localStorage.removeItem(key);
+      }
+    } catch {}
+
     fetch("/learned-patterns.json")
       .then((r) => r.json())
       .then((data: Pattern[]) => {
