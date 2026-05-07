@@ -1,1 +1,42 @@
-[]
+[
+  {
+    "match": "めんどくさい",
+    "replacements": {
+      "business": "精緻",
+      "sns": "こだわり強め",
+      "gentle": "奥行きある"
+    }
+  },
+  {
+    "match": "使えない",
+    "replacements": {
+      "business": "活用余地がある",
+      "sns": "成長株",
+      "gentle": "伸びしろ光る"
+    }
+  },
+  {
+    "match": "つまらない",
+    "replacements": {
+      "business": "安定感がある",
+      "sns": "落ち着き系",
+      "gentle": "落ち着き光る"
+    }
+  },
+  {
+    "match": "イライラ",
+    "replacements": {
+      "business": "強い熱意",
+      "sns": "本気モード",
+      "gentle": "熱量"
+    }
+  },
+  {
+    "match": "なめてる",
+    "replacements": {
+      "business": "自信光る",
+      "sns": "自信満々",
+      "gentle": "自信あふれる"
+    }
+  }
+]
