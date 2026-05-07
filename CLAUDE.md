@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## プロダクト概要
 
-**「やさしいフレーズ」** — きつい言葉・悪口を3つのモード（ビジネス / SNS / やさしい）でやさしい表現に変換する Web アプリ。
+**「やさしいフレーズ」** — きつい言葉・悪口をやさしい表現に変換する Web アプリ。AI変換モード（Phase 2）公開までは辞書ベースの単一フレーズ変換のみ。
 
 開発ブランチ: `claude/monetization-strategy-plan-g3QQH`
 
@@ -29,7 +29,7 @@ npm run lint         # ESLint
 npx tsc --noEmit     # 型チェックのみ
 
 # ロジック単体テスト（テストフレームワーク未導入のため tsx で直接実行）
-npx tsx -e "import { convert } from './src/lib/convert.ts'; console.log(convert('バカやろう', 'business'));"
+npx tsx -e "import { convert } from './src/lib/convert.ts'; console.log(convert('バカやろう'));"
 ```
 
 ## アーキテクチャ
@@ -45,7 +45,7 @@ app/src/
 
 ### データフロー
 
-`page.tsx` → `convert(input, mode)` → `ConvertResult { output, hits[] }`
+`page.tsx` → `convert(input, learnedPatterns?)` → `ConvertResult { output, hits[] }`
 
 ### `patterns.ts` — Pattern 型
 
@@ -53,7 +53,7 @@ app/src/
 type Pattern = {
   match: string;           // 主マッチ文字列
   variants?: string[];     // 表記ゆれ・スラング（馬鹿, バーカ, タヒ 等）
-  replacements: Record<"business" | "sns" | "gentle", string>;
+  replacement: string;     // 変換後フレーズ（単一）
   ng?: boolean;            // true = コミュニティ表示時に伏字化
 };
 ```
@@ -142,4 +142,4 @@ type Pattern = {
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase |
 | `STRIPE_SECRET_KEY` | Stripe |
-| `ANTHROPIC_API_KEY` | Claude API |
+| `ANTHROPIC_API_KEY` | Claude API（将来の AI 変換 Phase 2 用、現在未使用） |

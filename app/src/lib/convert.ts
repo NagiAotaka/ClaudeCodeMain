@@ -46,7 +46,7 @@ export function convert(input: string, extraPatterns: Pattern[] = []): ConvertRe
   for (const { key, pattern } of entries) {
     if (used.has(key)) continue;
     if (output.includes(key)) {
-      const replacement = pattern.replacements["gentle"];
+      const replacement = pattern.replacement;
       output = output.split(key).join(replacement);
       hits.push({ match: key, replacement, ng: !!pattern.ng });
       used.add(pattern.match);
