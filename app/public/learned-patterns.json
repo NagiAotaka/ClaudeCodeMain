@@ -1,0 +1,22 @@
+[
+  {
+    "match": "めんどくさい",
+    "replacement": "奥行きある"
+  },
+  {
+    "match": "使えない",
+    "replacement": "伸びしろ光る"
+  },
+  {
+    "match": "つまらない",
+    "replacement": "落ち着き光る"
+  },
+  {
+    "match": "イライラ",
+    "replacement": "熱量"
+  },
+  {
+    "match": "なめてる",
+    "replacement": "自信あふれる"
+  }
+]
